@@ -3,9 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="Images\pikachu_icon.svg" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+<title class="gradient_title">Pokebox V2</title>
 </head>
 <body>
-    <h1></h1>
+    <div class="circles">
+        <div class="blurred_circle" style="--circle_top: 100px; --circle_left: 100px;"></div>
+        <div class="blurred_circle" style="--circle_top: 400px; --circle_left: 850px;"></div>
+    </div>
+
+    <header class="header"> <!--   Header   -->
+            <div class="logo_conainer">
+                 <a href="#" class="logo">
+                <img src="Images\pikachu_icon.svg" alt="logo_pikachu" width="50px" height="50px">
+                <p class="link-page">V2</p>
+                </a>
+            </div>
+
+            <nav>
+                <div class="line"></div>
+                <div class="nav-bar">
+                    <a href="index2.html" class="link-page">Home</a>
+                    <a href="" class="link-page">About</a>
+                    <a href="" class="link-page">Shop</a>
+                    <a href="" class="link-page">Contact Us</a>
+                    <a href="" class="link-page">FAQ</a>
+                    <a href="" class="link-page">Cards</a>
+                </div>
+            </nav>
+
+            <div class="burger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+      
+    </header> <!--  end  Header   -->
+    
+
+    <div class="nav-menu">
+        <a href="" class="link-page-menu">HOME</a>
+        <a href="" class="link-page-menu">SHOP</a>
+        <a href="" class="link-page-menu">CARDS</a>
+        <a href="" class="link-page-menu">FAQ</a>
+        <div class="mode link-page-menu">
+            <p href="" class="darkmode-text">DARK MODE</p>
+            <input type="checkbox" id="darkmode-toggle" class="dark-none">
+            <label for="darkmode-toggle"></label> <p class="ifTrue">NON</p>
+        </div>
+        
+        
+    </div> <!--  end  nav-menu   -->
+    <div class="home">
+        <div class="text_section_home">
+            <h1 class="gradient_title">Discover the world <br> of pokemons</h1>
+            <p class="gradient_text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita ratione assumenda consequuntur eos ad maiores illum mollitia explicabo similique eaque quo, quaerat, dicta, labore eius. Atque tempora necessitatibus nobis perspiciatis.</p>
+            <div class="btn_container">
+                <button class="btn_section btn_signup">Sign Up</button>
+                <button class="btn_section btn_login">Log in</button>
+            </div>
+        </div>
+        <div class="img_section_home">
+            <img src="Images\pikachu.png" alt="pikachu_img" class="pikachu_img">
+        </div>
+    </div>
+
+   
+
+
+    <script src="script.js"></script>
 </body>
 </html>
