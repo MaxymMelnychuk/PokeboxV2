@@ -12,7 +12,7 @@ html {
 }
 
 body {
-    overflow: hidden;
+    
     min-height: 100%;
     background-color: var(--background_color);
 }
@@ -25,7 +25,7 @@ body {
     filter: blur(200px); 
     border-radius: 50%;
     z-index: -1;
-    opacity: 0.20;
+    opacity: 0.30;
     top: var(--circle_top, 100px); /* Utilisation de valeurs fixes */
     left: var(--circle_left, 100px); /* Utilisation de valeurs fixes */
     right: var(--circle_right, auto);
@@ -34,8 +34,8 @@ body {
 }
 
 .circles {
-    position: relative; /* Assurez-vous que le conteneur a une position relative */
-     /* Ajustez la hauteur selon vos besoins */
+    position: relative; 
+    
 }
 
 :root {
@@ -171,17 +171,22 @@ body {
     transition: .3s ease;
 }
 
-.home {
+.home, .section_about_us {
     padding: 10rem 5rem 0 5rem;
     display: flex;
     width: 100%;
     justify-content: center;
-    
-    
+   
     
 }
 
-.text_section_home {
+.section_about_us {
+    margin-top: 400px;
+}
+
+
+
+.text_section_home, .text_section_about {
     display: flex;
     flex-wrap: wrap;
     gap: 30px;
@@ -191,12 +196,28 @@ body {
     
 }
 
+.text_section_about {
+    padding-left: 150px;
+    
+}
+
+.gradient_text_about {
+    color: white;
+    max-width: 90%;
+    font-size: clamp(1rem, 1vw + 0.4rem, 1.5rem);
+}
+
+
+
+
+
+
+
+
 .img_section_home {
     display: flex;
     justify-content: end;
     align-items: center;
-    
-    
     
 }
 
@@ -210,7 +231,7 @@ body {
 
 .gradient_text {
     color: gray;
-    max-width: 60%;
+    max-width: 70%;
     /*font-size: 1.5rem; */
     font-size: clamp(1rem, 1vw + 0.4rem, 1.5rem);
 }
@@ -222,65 +243,10 @@ body {
     
 }
 
-@media (max-width: 1800px) {
-    .pikachu_img {
-        width: clamp(200px, 75vw, 30vw);
-        height: auto; /* Ajuste la largeur de l'image */ /* Ajuste la largeur maximale pour les écrans 4K */
-    }
-}
-
-@media (max-width: 1280px) {
-   .home {
-    justify-content: space-evenly;
-   }
-
-   .gradient_text {
-    max-width: 75%;
-   }
-}
-
-@media (max-width: 1024px) {
-     
-    .home {
-        justify-content: space-between;
-       }
-    .link-page {
-        font-size: 0.7rem;
-    }
-
-    .gradient_text {
-        max-width: 90%;
-       }
-
-    .nav-bar {
-        padding: 0 30px;
-    }
-}
-
-@media (max-width: 768px) {
-    .nav-bar, .img_section_home {
-        display: none;
-    }
-
-    .home {
-        justify-content: center;
-    }
-
-    .text_section_home {
-        width: 100%;
-        padding: 0 2rem;
-    }
- }
-
-
-
-
-    
-
 
 .btn_section {
-    width: 120px;
-    padding: 10px;
+    width: max-content;
+    padding: 10px 30px;
     
 
 }
@@ -289,8 +255,6 @@ body {
     display: flex;
     gap: 20px;
 }
-
-
 
 .burger span:nth-child(1) {
 
@@ -359,7 +323,6 @@ a:hover, .burger:hover {
     transform: translateX(100%); 
     right: 0;
     transition: all 0.3s ease;
-    
    
 } 
 
@@ -425,25 +388,88 @@ input:checked + label::after {
     background: white;
 }
 
-@media (max-width: 1720px) {
-   /* .gradient_title {
-        
-        font-size: 4rem;
-        max-width: 70%;
-        white-space: nowrap;
-    }
+.sales_reviews_container {
+    margin-top: 500px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 50px;
     
-    .gradient_text {
-       
-        max-width: 60%;
-        font-size: 1.2rem;
-    }
+}
 
-    .pikachu-img {
-        width: 1rem;
-        height: 1.5rem;
-    } */
+.section_stats {
+    padding-top: 50px;
+  display: inline-flex;
+  justify-content: space-around;
+  width: 90%;
+    
+}
+
+.stat, .market {
+    font-size: clamp(1rem, 2vw + 1.5rem, 5rem);
+}
+
+.description {
+    font-size: 2vw;
+    text-align: center;
+
+}
+
+.market_description {
+    width: 60%;
+    font-size: clamp(1rem, 1vw + 0.5rem, 1.5rem);
 }
 
 
 
+@media (max-width: 1800px) {
+    .pikachu_img {
+        width: clamp(200px, 75vw, 30vw);
+        height: auto; /* Ajuste la largeur de l'image */ /* Ajuste la largeur maximale pour les écrans 4K */
+    }
+}
+
+@media (max-width: 1280px) {
+   .home {
+    justify-content: space-evenly;
+   }
+
+   .gradient_text {
+    max-width: 75%;
+   }
+}
+
+@media (max-width: 1024px) {
+     
+    .home {
+        justify-content: space-between;
+       }
+    .link-page {
+        font-size: 0.7rem;
+    }
+
+    .gradient_text {
+        max-width: 90%;
+       }
+
+    .nav-bar {
+        padding: 0 30px;
+    }
+}
+
+@media (max-width: 768px) {
+    .nav-bar, .img_section_home {
+        display: none;
+    }
+
+    .home {
+        justify-content: center;
+    }
+
+    .text_section_home {
+        width: 100%;
+        padding: 0 2rem;
+    }
+ }
