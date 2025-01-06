@@ -28,3 +28,5 @@ burger.addEventListener("click", () => {
     menu.classList.toggle("active2")
     burger.classList.toggle("active");
 })
+
+
