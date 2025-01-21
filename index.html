@@ -14,10 +14,17 @@
 <title class="gradient_title">Pokebox V2</title>
 </head>
 <body>
+     
     <div class="circles">
         <div class="blurred_circle" style="--circle_top: 100px; --circle_left: 100px;"></div>
+        <div class="blurred_circle" style="--circle_top: 1800px; --circle_left: 100px;"></div>
+        <div class="blurred_circle" style="--circle_top: 2500px; --circle_left: 100px;"></div>
+        <div class="blurred_circle" style="--circle_top: 1000px; --circle_left: 100px;"></div>
         <div class="blurred_circle" style="--circle_top: 400px; --circle_left: 850px;"></div>
-    </div>
+        <div class="blurred_circle" style="--circle_top: 2400px; --circle_left: 850px;"></div>
+        <div class="blurred_circle" style="--circle_top: 1500px; --circle_left: 850px;"></div>
+        <div class="blurred_circle" style="--circle_top: 3200px; --circle_left: 850px;"></div>
+    </div>  
 
     <header class="header"> <!--   Header   -->
             <div class="logo_conainer">
@@ -66,8 +73,8 @@
             <h1 class="gradient_title">Discover the world <br> of pokemons</h1>
             <p class="gradient_text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita ratione assumenda consequuntur eos ad maiores illum mollitia explicabo similique eaque quo, quaerat, dicta, labore eius. Atque tempora necessitatibus nobis perspiciatis.</p>
             <div class="btn_container">
-                <button class="btn_section btn_signup">Sign Up</button>
-                <button class="btn_section btn_login">Log in</button>
+                <a class="btn_section btn_signup">Sign Up</a>
+                <a class="btn_section btn_login">Log in</a>
             </div>
         </div>
         <div class="img_section_home">
@@ -99,11 +106,11 @@
             <img src="Images\cards.svg" alt="pikachu_img" class="pikachu_img">
         </div>
         <div class="text_section_about">
-            <h2>About Us</h2>
+            <h2 class="text_gradient">About Us</h2>
             <h1 class="gradient_title">Discover the world <br> of pokemons</h1>
             <p class="gradient_text_about">Lorem ipsum dolor sit amet consectetur adipisicing elit. Expedita ratione assumenda consequuntur eos ad maiores illum mollitia explicabo similique eaque quo, quaerat, dicta, labore eius. Atque tempora necessitatibus nobis perspiciatis.</p>
             <div class="btn_container">
-                <button class="btn_section btn_signup">Get started for free</button>
+                <button class="btn_section btn_login">Get started for free</button>
                 
             </div>
         </div>
@@ -112,51 +119,77 @@
 
     <div class="cards_container">
         <div class="cards_text">
-            <h3>Our popular cards</h3>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
+            <h3 class="text_gradient title_cards">Our popular cards</h3>
+            <p class="description_cards">Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
         </div>
 
+    <div class="cards_collection">
+        <div class="card_section"> 
+            <div class="gradient"></div>
+            <div class="card_container colour">
+                <img src="Images\card-example.svg" alt="card-example" class="card_img">
+                <p class="card_name up">card name</p>
+                <div class="fade_hide2 up"></div>
+            </div>
+        </div>
 
         <div class="card_section"> 
-            <div class="card_container">
+            <div class="gradient"></div>
+            <div class="card_container colour">
                 <img src="Images\card-example.svg" alt="card-example" class="card_img">
-                <p class="card_name">card name</p>
+                <p class="card_name up">card name</p>
+                <div class="fade_hide2 up"></div>
             </div>
-
-            <div class="card_container">
-                <img src="Images\card-example.svg" alt="card-example" class="card_img ">
-                <p class="card_name">card name</p>
-            </div>
-
-            <div class="card_container">
-                <img src="Images\card-example.svg" alt="card-example" class="card_img">
-                <p class="card_name">card name</p>
-            </div>
-
         </div>
 
+        <div class="card_section"> 
+            <div class="gradient"></div>
+            <div class="card_container colour">
+                <img src="Images\card-example.svg" alt="card-example" class="card_img">
+                <p class="card_name up">card name</p>
+                <div class="fade_hide2 up"></div>
+            </div>
+        </div>
+    </div>
+            
+
+        
+
         <div class="container_see-all">
-            <button class="see_all">See all</button>
+            <button class="see_all btn_signup">See all</button>
         </div>
 
     </div>
 
         <div class="how_use_section">
             <div class="section_buttons_use">
-                <button class="exchange"><img src="Images\echange.svg" alt="" width="50"></button>
-                <button class="buy"><img src="Images\achat.svg" alt="" width="40"></button>
-                <button class="sell"><img src="Images\vente.svg" alt="" width="45"></button>
+                <button class=" tab exchange tab-menu1 tab-active"><div class="nothing"><img src="Images\echange.png" alt="" width="50" ></div></button>
+                <button class=" tab buy tab-menu2"> <div class="nothing"><img src="Images\vente.png" alt="" width="40" ></div></button>
+                <button class=" tab sell tab-menu3"> <div class="nothing"><img src="Images\payer.png" alt="" width="35" ></div></button>
             </div>
 
+            
             <div class="section_text_use">
-                <h3 class="how_use">How to use</h3>
+                <div class="border_test">
+                    <h3 class="how_use text_gradient">How to use</h3>
 
-                <div class="text_container">
-                    <h4 class="text_container_title" >Exchange</h4>
-                    <p class="text_container_description">Lorem ipsum dolor sit amet consectetur adipisicing elit. Possimus commodi sed temporibus consequuntur ea iste optio. Tempora cum blanditiis totam quisquam atque aspernatur, odio earum nostrum</p>
-                </div>
+                    <div class="text_container">
+                        <h4 class="text_container_title1 none active" >Exchange</h4>
+                        <p class="text_container_description1 none active">adipisicing elit. Possimus commodi sed temporibus consequuntur ea iste optio. Tempora cum blanditiis totam quisquam atque aspernatur, odio earum nostrum</p>
+
+                        <h4 class="text_container_title2 none" >Vente</h4>
+                        <p class="text_container_description2 none">Loreelit. Possimus comequuntur ea iste optio. Tempora sed temporibus consequuntur ea iste o cum  sed temporibus consequuntur ea iste optio.blanditiis totam quisquam atque aspernatur, odio earum nostrum</p>
+
+                        <h4 class="text_container_title3 none" >Achat</h4>
+                        <p class="text_container_description3 none">Lorem i dolor sit amedipisicing elitmus commodi sed temporibus consequuntur ea iste optio. Tempora cum blanditiis totam quisquam atque aspernatur, odio earum nostrum</p>
+                    </div>
+
+                    
+                </div>  
+
+                <div class="fade_hide"></div>
             </div>
-
+        </div>
 
         </div>
 
