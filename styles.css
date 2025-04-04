@@ -14,59 +14,46 @@
 ::-webkit-scrollbar-thumb {
     background-color: #796218;
     border-radius: 10px;
-
 }
 
 html {
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
+    
 }
 
 body {
     
     min-height: 100%;
     background-color: var(--background_color);
+    
+}
+
+.circles {
+  
+   position: relative;
+    width: 100%;
+    height: 100%;
+    background-position: center;
+    background-image: var(--background-image);
 }
 
 button {
     cursor: pointer;
 }
 
-/* Conteneur parent */
-/* Le conteneur des cercles */
-.circles {
+
+.circle {
     position: absolute;
-    width: 100%;
-    height: 4000px;
-    top: 0;
-    left: 0;
-    z-index: 10; /* Assure que les cercles sont derrière le texte */
-    overflow: hidden;
-    opacity: var(--visible-color); /* Empêche les cercles de dépasser */
-  }
-  
-  /* Les cercles avec position absolue */
-  .blurred_circle {
-    position: absolute;
-    width: clamp(150px, 20vw, 300px);
-    height: clamp(150px, 20vw, 300px);
-    background-color: #FFCF32;
-    filter: blur(200px);
     border-radius: 50%;
-    z-index: 100;
-    opacity: 1;
-    image-rendering: -webkit-optimize-contrast;
-  
-    /* Utilisation des variables CSS pour positionner les cercles */
-    top: var(--circle_top, 10vh); 
-    left: var(--circle_left, 15vw);
+    background: rgba(255, 191, 0, 0.3);
+    filter: blur(clamp(50px, 2vw, 100px)); /* Applique l'effet de flou */
+    pointer-events: none; /* Pour ne pas interférer avec les clics */
   }
 
   .tab, .btn_section, .see_all {
-    z-index: 50;
+    z-index: 200;
   }
-  
- 
   
 
 .active { /*  apparaite content    */
@@ -98,7 +85,9 @@ button {
 
 :root {
     /* Light Mode */
+    
     --background_color: #151820;
+
     --text-color1: #FFFFFF;
     --text-color2: #B1B1B1; 
     --text-color3: #FFCF32;
@@ -117,6 +106,7 @@ button {
     --testing-color3: linear-gradient(to bottom, #FFD13A, #8F7318);
     --testing-color4: linear-gradient(to right, #c4a234, #755a0b);
     --testing-color5: radial-gradient(ellipse at 50% -50%, rgb(151, 121, 0) 35%, rgb(84, 65, 13) 60%);
+    --testing-color6: linear-gradient(to right, #c4a234, #755a0b);
     --border-none:  #FFCF32;
     --box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     --border-none2: none;
@@ -133,7 +123,12 @@ button {
     --btn-how: linear-gradient(to bottom, #ffcf325e, #ffcf3200 );
     --btn-border: #ffd75485;
     --btn-hover: #ffdf3f;
+    --btn-hover2: #ffcf3223;
+    --btn-hover3:   rgba(255, 255, 255, 0.158); 
     --border-changes: #856C1A;
+    --line-opacity: linear-gradient(to right, #0000 5%, #ffc014  35%, #ffc014 50%, rgba(246, 193, 59, 0.8) 65%, #0000 95%);
+    --footer-bg: #795d025b; /* #604e19 */
+    --background-image: url("Images/test.png");
 
     
 }
@@ -159,6 +154,7 @@ button {
     --testing-color3: #FFCF32;
     --testing-color4:  #FFCF32;
     --testing-color5: radial-gradient(ellipse at 50% -50%, rgb(255, 255, 255) 35%, rgb(255, 255, 255) 60%);
+    --testing-color6: #dbb621;
     --border-none: none;
     --box-shadow: none;
     --border-none2: #000000;
@@ -175,7 +171,12 @@ button {
     --btn-how: linear-gradient(to bottom, #dcdcdc5e, #b7b7b700 );
     --btn-border: #dfdfdf85;
     --btn-hover: #9c9c9c;
+    --btn-hover2: #f2be10;
+    --btn-hover3:   rgba(128, 128, 128, 0.127); 
     --border-changes: #000000;
+    --line-opacity: none;
+    --footer-bg: #dcdcdc;
+    --background-image: none; 
     
     
     
@@ -193,7 +194,7 @@ button {
     align-items: center;
     display: inline-flex;
     font-family: "Inter", sans-serif;
-    z-index: 200;
+    z-index: 600;
     
 }
 
@@ -201,8 +202,13 @@ button {
     color: var(--text-color3);
 }
 
+.logo_container {
+    position: relative;
+}
+
 .logo {
-   
+    position: relative;
+    z-index: 600;
     gap: 15px;
     display: inline-flex;
     align-items: center;
@@ -222,12 +228,13 @@ button {
     align-items: center;
     color: var(--dark-bg2);
     z-index: 200;
+    position: relative;
 }
 
 
 .line {
     height: 1px;
-    background-image: linear-gradient(to right, #0000 5%, #ffc014  35%, #ffc014 50%, rgba(246, 193, 59, 0.8) 65%, #0000 95%);
+    background-image: var(--line-opacity);
     
 }
 
@@ -282,6 +289,7 @@ button {
 .home, .section_about_us {
     padding: 10rem 5rem 0 5rem;
     display: flex;
+    align-items: center;
     width: 100%;
     justify-content: center;
    
@@ -295,7 +303,7 @@ button {
     display: flex;
     flex-wrap: wrap;
     gap: 30px;
-    width: 50%;
+    width: 70%;
     justify-content: center;
     flex-direction: column;
     
@@ -308,7 +316,7 @@ button {
 
 .gradient_text_about {
     color: gray;
-    max-width: 90%;
+  
     font-size: clamp(1rem, 1vw + 0.4rem, 1.5rem);
 }
 
@@ -358,6 +366,11 @@ button {
     border-radius: 10px;
     color: var(--text-color3);
     cursor: pointer;
+    transition: all 0.5s ease;
+}
+
+.btn_signup:hover {
+    background-color: var(--btn-hover2);
 }
 
 
@@ -367,12 +380,14 @@ button {
     border-radius: 10px;
     color: var(--text-color1);
     cursor: pointer;
+    transition: all 0.5s ease;
 }
 
-.background-color {
-   background:  var(--testing-colorv2);
-   border: solid 1px var(--white-none);
+.btn_login:hover {
+    background-color: var(--btn-hover3);
 }
+
+
 
 .burger span:nth-child(1) {
 
@@ -442,7 +457,7 @@ a {
     width: 25vw;
     height: 100vh;
     background-color: var(--nav-color);
-    z-index: 100;
+    z-index: 500;
     visibility: hidden; 
     margin-top: 80px;
     transform: translateX(100%); 
@@ -539,8 +554,7 @@ input:checked + label::after {
 
 .stat {
     font-family: "Inter", serif;
-   font-size: 4rem;
-  
+    font-size: 4rem;
   font-optical-sizing: auto;
   font-weight: 900;
   font-style: normal;
@@ -576,7 +590,7 @@ input:checked + label::after {
 }
 
 .text_gradient {
-    background: var(--testing-color4);
+    background: var(--testing-color6);
   -webkit-background-clip: text;  /* Nécessaire pour Safari */
   background-clip: text;          /* Support pour les autres navigateurs */
   color: transparent;
@@ -590,6 +604,8 @@ input:checked + label::after {
 .cards_container {
     width: 100%;
     margin-top: 300px;
+    position: relative;
+    
     
 }
 
@@ -623,6 +639,8 @@ input:checked + label::after {
 .cards_collection {
     display: flex;
     justify-content: center;
+    position: relative;
+    z-index: -2;
     gap: 50px;
     
 }
@@ -650,13 +668,13 @@ input:checked + label::after {
 }
 
 
-
-
 .how_use_section {
     width: 100%;
     height: 320px;
     display: flex;
     gap: 60px;
+    position: relative;
+   margin-bottom: 200px;
     margin-top: 200px;
     justify-content: center;
     align-items: center;
@@ -668,6 +686,7 @@ input:checked + label::after {
     flex-direction: column;
     justify-content: center;
     gap: 40px;
+    z-index: 100;
     
 }
 
@@ -682,7 +701,7 @@ input:checked + label::after {
     border-radius: 15px;
     background: var(--how-change);
     position: relative;
-    z-index: 5;
+    z-index: -2;
    
 }
 
@@ -794,9 +813,48 @@ input:checked + label::after {
     gap: 30px;
 }
 
+.footer {
+    width: 100%;
+    height: 150px;
+    background-color: var(--footer-bg);
+    
+    z-index: 100;
+    display: flex;
+    gap: 5px;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-color1);
+}
+
+.wrapping {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-right: auto;
+    margin-left: auto;
+    position: relative;
+   
+}
+
 @media (min-width: 2000px) {
     .gradient_text_about {
         max-width: 75%;
+    }
+
+    .img_section_home {
+        width: 40%;
+        justify-content: end;
+    }
+
+    .text_section_home {
+        width: 700px;
+        justify-content: center;
+        align-items: start;
+    }
+
+    .text_section_about {
+        width: 50%;
     }
 }
 
@@ -807,7 +865,6 @@ input:checked + label::after {
 
     
 }
-
 
 @media (max-width: 1800px) {
     .pikachu_img {
@@ -1052,6 +1109,11 @@ span {
         height: 350px;
     }
 
+    .footer {
+        flex-direction: column;
+        gap: 20px;
+    }
+
 }
 
 
@@ -1109,6 +1171,11 @@ span {
         
     }
 
+    .section_stats {
+        flex-direction: column;
+        gap: 50px;
+    }
+
  }
 
  @media (max-width: 445px) {
@@ -1158,10 +1225,11 @@ span {
         font-size: 2.3rem;
     }
 
-    .section_about_us {
-        padding-left: 2rem;
-        padding-right: 2rem;
+    .description_cards {
+        margin-top: 10px;
+        line-height: 30px;
     }
+
 
     .text_section_home {
         
@@ -1172,6 +1240,11 @@ span {
 
     .btn_section {
         font-size: 0.8rem;
+    }
+
+    .home, .section_about_us {
+        padding-left: 0;
+        padding-right: 0;
     }
 
    
@@ -1198,6 +1271,76 @@ span {
         opacity: 1;
     }
 }
+
+@media (prefers-reduced-motion: no-preference) {
+
+    .container_stats, .market, .market_description, .cards_text{
+    
+    
+    animation: fade-in linear;
+    animation-timeline: view();
+    animation-range: 0px 350px;
+    }
+
+    .text_section_about, .section_text_use{
+    
+    
+        animation: fade-transform linear;
+        animation-timeline: view();
+        animation-range: 0px 350px;
+    }
+
+    .img_section_home:not(.pikachu_img), .section_buttons_use {
+        animation: fade-transform2 linear;
+        animation-timeline: view();
+        animation-range: 0px 350px;
+    }
+
+    .cards_collection {
+        animation: fade-top linear;
+        animation-timeline: view();
+        animation-range: 0px 450px;
+    }
+
+    
+}
+
+@keyframes fade-in {
+    from {scale: .8; opacity: 0;}
+    to {scale: 1; opacity: 1;}
+  }
+
+
+@keyframes fade-transform {
+    from {
+        transform: translateX(28%);
+        opacity: 0;
+    } to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fade-transform2 {
+    from {
+        transform: translateX(-28%);
+        opacity: 0;
+    } to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fade-top {
+    from {
+        transform: translateY(50%);
+        opacity: 0;
+    } to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
 
 
 

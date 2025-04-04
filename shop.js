@@ -1,0 +1,2 @@
+document.querySelectorAll('.filter-btn').forEach(btn =>  btn.addEventListener('click', () => 
+    document.querySelectorAll('.pokemon-card').forEach(card => card.style.display = (btn.dataset.filter === 'all' || card.dataset.type === btn.dataset.filter) ? 'block' : 'none')));

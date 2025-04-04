@@ -6,6 +6,7 @@ const menu = document.querySelector(".nav-menu")
 const active = document.querySelector(".active2")
 let tab = document.querySelectorAll(".tab"); // Selectionner tabs et contenus    //
 let div = document.querySelectorAll(".none");
+const numbers = document.querySelectorAll(".stat");
 
 const enableDarkmode = () => {
     document.body.classList.add('darkmode')
@@ -74,6 +75,29 @@ tab.forEach(function (element){
     console.log(this);
 
 });
+
+const updateCount = (el) => {
+    const value = parseInt(el.dataset.value);
+    const increment = Math.ceil(value/1000)
+
+    let initialValue = 0;
+
+    const increaceCount = setInterval(() => {
+        initialValue += increment;
+
+        if(initialValue > value) {
+            el.innerHTML = `${value}+`;
+            clearInterval(increaceCount);
+            return;
+        }
+        el.innerText = `${initialValue}+`
+    })
+};
+numbers.forEach((item) => {
+    updateCount(item);
+});
+
+
 
 
 

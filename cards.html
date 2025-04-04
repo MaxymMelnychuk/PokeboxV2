@@ -14,34 +14,107 @@
 <title>Pokebox V2</title>
 </head>
 <body>
-    <h1>Cards for you !</h1>
-    <input type="text" id="search" placeholder="enter pokemon name">
     
-    <div id="pokemonCard"></div>
-    <select id="pokemonSelect">
-        <option value="">Choisir un type</option>
-        <option value="normal">Normal</option>
-        <option value="fire">Feu</option>
-        <option value="water">Eau</option>
-        <option value="electric">Électrique</option>
-        <option value="grass">Plante</option>
-        <option value="ice">Glace</option>
-        <option value="fighting">Combat</option>
-        <option value="poison">Poison</option>
-        <option value="ground">Sol</option>
-        <option value="flying">Vol</option>
-        <option value="psychic">Psy</option>
-        <option value="bug">Insecte</option>
-        <option value="rock">Roche</option>
-        <option value="ghost">Spectre</option>
-        <option value="dragon">Dragon</option>
-        <option value="dark">Ténèbres</option>
-        <option value="steel">Acier</option>
-        <option value="fairy">Fée</option>
-      </select>
+    <header class="header"> <!--   Header   -->
+        <div class="logo_conainer">
+             <a href="#" class="logo">
+            <img src="Images\pikachu_icon.svg" alt="logo_pikachu" width="50px" height="50px">
+            <p class="link-page">V2</p>
+            </a>
+        </div>
+        
+
+        <nav>
+            <div class="line"></div>
+            <div class="nav-bar">
+                <a href="index.html" class="link-page">Home</a>
+                <a href="" class="link-page">About</a>
+                <a href="shop.html" class="link-page">Shop</a>
+                <a href="" class="link-page">Contact Us</a>
+                <a href="" class="link-page">FAQ</a>
+                <a href="cards.html" class="link-page">Cards</a>
+            </div>
+        </nav>
+
+        <div class="burger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+  
+</header> <!--  end  Header   -->
+
+
+        
+
+<div class="nav-menu">
+    <a href="" class="link-page-menu">HOME</a>
+    <a href="shop.html" class="link-page-menu">SHOP</a>
+    <a href="" class="link-page-menu">CARDS</a>
+    <a href="" class="link-page-menu">FAQ</a>
+    <div class="mode link-page-menu">
+
+        <p href="" class="darkmode-text">DARK MODE</p>
+        <input type="checkbox" id="darkmode-toggle" type="text" class="dark-none">
+        <label for="darkmode-toggle"></label> <p class="ifTrue">NON</p>
+
+    </div>
+</div>
+
+
+    <div class="filter_section">
+    <h1 class="gradient">Cards for you !</h1>
+        <div class="filter_container">
+        <select id="generation-filter">
+            <option value="">Toutes les générations</option>
+            <option value="generation-i">generation-i</option>
+            <option value="generation-ii">generation-ii</option>
+            <option value="generation-iii">generation-iii</option>
+            <option value="4">Génération 4</option>
+            <option value="5">Génération 5</option>
+            <option value="6">Génération 6</option>
+            <option value="7">Génération 7</option>
+            <option value="8">Génération 8</option>
+            <option value="9">Génération 9</option>
+        </select>
+        <div class="hearth"></div>
+
+        <input type="text" id="search" placeholder="Enter pokemon name">
+
+        <select id="pokemonSelect">
+            <option class="pok-type" value="">All</option>
+            <option class="pok-type" value="normal">normal</option>
+            <option class="pok-type" value="fire">fire</option>
+            <option class="pok-type" value="water">water</option>
+            <option class="pok-type" value="electric">electric</option>
+            <option class="pok-type" value="grass">grass</option>
+            <option class="pok-type" value="ice">ice</option>
+            <option class="pok-type" value="fighting">fighting</option>
+            <option class="pok-type" value="poison">poison</option>
+            <option class="pok-type" value="ground">ground</option>
+            <option class="pok-type" value="flying">flying</option>
+            <option class="pok-type" value="psychic">psychic</option>
+            <option class="pok-type" value="bug">bug</option>
+            <option class="pok-type" value="rock">rock</option>
+            <option class="pok-type" value="ghost">ghost</option>
+            <option class="pok-type" value="dragon">dragon</option>
+            <option class="pok-type" value="dark">dark</option>
+            <option class="pok-type" value="steel">steel</option>
+            <option class="pok-type" value="fairy">fairy</option>
+        </select>
+        </div>
+    </div>
+
+    <div class="error-message"></div>
+    
+
+    <div id="pokemonCards"></div>
+
     
     
-      
+    
+    
+    <script src="script.js"></script>
     <script src="cards.js"></script>
 </body>
 </html>
