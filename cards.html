@@ -14,6 +14,8 @@
 <title>Pokebox V2</title>
 </head>
 <body>
+
+    
     
     <header class="header"> <!--   Header   -->
         <div class="logo_conainer">
@@ -30,7 +32,7 @@
                 <a href="index.html" class="link-page">Home</a>
                 <a href="" class="link-page">About</a>
                 <a href="shop.html" class="link-page">Shop</a>
-                <a href="" class="link-page">Contact Us</a>
+                <a href="dashboard.php" class="link-page">Dashboard</a>
                 <a href="" class="link-page">FAQ</a>
                 <a href="cards.html" class="link-page">Cards</a>
             </div>
@@ -70,14 +72,14 @@
             <option value="generation-i">generation-i</option>
             <option value="generation-ii">generation-ii</option>
             <option value="generation-iii">generation-iii</option>
-            <option value="4">Génération 4</option>
-            <option value="5">Génération 5</option>
-            <option value="6">Génération 6</option>
-            <option value="7">Génération 7</option>
-            <option value="8">Génération 8</option>
-            <option value="9">Génération 9</option>
+            <option value="generation-iv">generation-iv</option>
+            <option value="generation-v">generation-v</option>
+            <option value="generation-vi">generation-vi</option>
+            <option value="generation-vii">generation-vii</option>
+            <option value="generation-viii">generation-viii</option>
+            <option value="generation-ix">generation-ix</option>
         </select>
-        <div class="hearth"></div>
+   
 
         <input type="text" id="search" placeholder="Enter pokemon name">
 
@@ -105,7 +107,7 @@
         </div>
     </div>
 
-    <div class="error-message"></div>
+    <div class="error-message" id="errorMsg">Aucun POKEMON</div>
     
 
     <div id="pokemonCards"></div>

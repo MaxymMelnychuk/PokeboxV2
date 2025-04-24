@@ -1,0 +1,79 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body, html {
+    height: 100%;
+    font-family: Arial, sans-serif;
+    color: white;
+  }
+  
+  /* Layout général */
+  .wrapper {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    grid-template-areas: "sidebar main";
+    height: 100vh;
+    transition: all 0.3s ease;
+  }
+  
+  /* Quand la sidebar est cachée */
+  .wrapper.sidebar-hidden {
+    grid-template-columns: 0 1fr;
+  }
+  
+  /* Sidebar */
+  .sidebar {
+    grid-area: sidebar;
+    background-color: #18263a;
+    color: white;
+    padding: 20px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+  
+  .sidebar ul {
+    list-style: none;
+  }
+  
+  .sidebar ul li {
+    margin: 20px 0;
+  }
+  
+  .sidebar ul li a {
+    color: white;
+    text-decoration: none;
+  }
+  
+  /* Contenu principal */
+  .main-content {
+    grid-area: main;
+    padding: 20px;
+    background-color: #0d1521;
+    overflow-y: auto;
+    transition: all 0.3s ease;
+  }
+  
+  /* Bouton toggle */
+  .toggle-btn {
+    font-size: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-bottom: 20px;
+    color: white;
+  }
+  
+  /* Responsive mobile */
+  @media screen and (max-width: 768px) {
+    .wrapper {
+      grid-template-columns: 200px 1fr;
+    }
+  
+    .wrapper.sidebar-hidden {
+      grid-template-columns: 0 1fr;
+    }
+  }
+  
