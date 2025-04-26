@@ -1,11 +1,8 @@
-<?php 
-require 'vendor/autoload.php';
+<?php
 
-// Utilise la librairie Guzzle pour les requêtes HTTP
-use GuzzleHttp\Client;
+require_once("connexion.php");
 
-// Initialisation du client HTTP
-$client = new Client();
+
 
 function username($username) {
     if (strlen($username) > 4) {
@@ -40,13 +37,32 @@ function logIn($password, $passwordRepeat) {
    
 }
 
-function accepting($username, $password, $passwordRepeat) {
+function accepting($username, $password, $passwordRepeat, $pdo) {
     
     $isUsernameValid = username($username);        
     $isPasswordValid = logIn($password, $passwordRepeat); 
     
     if ($isUsernameValid && $isPasswordValid) {
         echo '<p style="color: green;">Formulaire envoyée</p>';
+
+        if($_POST){
+
+            $email = $_POST["email"];
+            $password = $_POST["password"];
+            $username = $_POST["username"];
+        
+            $sql = "INSERT INTO user (email, password, username) VALUES(:email, :password, :username)";
+        
+            $stmt = $pdo->prepare($sql);
+            $stmt->execute([
+                'email' => $email,
+                'password' => password_hash($password, PASSWORD_DEFAULT),
+                'username' => $username
+            ]);
+        
+            echo "Votre user a été cocrrectement inséré en BDD";
+        
+        }
         
         
         
@@ -71,12 +87,13 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     $passwordRepeat = $_POST['passwordRepeat'];
    
  
-    $accept = accepting($username, $password, $passwordRepeat);
+    $accept = accepting($username, $password, $passwordRepeat, $pdo);
     
    
    
     
 }
+
 
 ?>
 
@@ -90,6 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     <title>Login</title>
 </head>
 <body>
+
 <h2>Sign up</h2>
     <form action="<?php echo $_SERVER['PHP_SELF'];?>" method="POST">
         <div>
@@ -112,7 +130,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             <input type="email" id="email" name="email" required><br><br>
         </div>
 
-        <button onclick="accepting()" type="submit">Login</button>
+        <button onclick="accepting()" type="submit">Register</button>
 
         <div class="register_form">
             <p>Already have account ?</p>
@@ -124,7 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
     </form>
 
 
-        <script src="register.js">
+        
         
         </script>
 </body>

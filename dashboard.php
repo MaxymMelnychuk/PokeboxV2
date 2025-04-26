@@ -1,4 +1,31 @@
-<?php 
+<?php
+
+///// PROFILE.PHP
+require_once("connexion.php");
+
+
+if(!isset($_SESSION["iduser"])) {
+    header("location:login.php");
+}
+
+// Déconnexion
+if (isset($_GET["action"]) && $_GET["action"] == "deconnexion") {
+    session_unset();
+    session_destroy();
+    header("location:login.php");
+    exit;
+}
+
+
+
+if(isset($_GET["action"]) && $_GET["action"] == "deconnexion") {
+    // je vide ma session
+    unset($_SESSION["iduser"]);
+    unset($_SESSION["email"]);
+    unset($_SESSION["username"]);
+    header("location:login.php"); // redirection sans paramètre
+}
+
 
 ?>
 
@@ -18,14 +45,18 @@
         <li><a href="#">Profil</a></li>
         <li><a href="#">Mes cartes</a></li>
         <li><a href="#">Autre</a></li>
-        <li><a href="#">Déconnexion</a></li>
+        <li><a href="?action=deconnexion">Déconnexion</a></li>
       </ul>
     </nav>
 
     <!-- Contenu principal -->
     <main class="main-content">
       <button id="toggle-btn" class="toggle-btn">&#9776;</button>
-      <h1>Welcome !</h1>
+      <?php
+
+        echo "<h1> Salut,  " . $_SESSION["username"] . "</h1>";
+    
+    ?>
       <p></p>
     </main>
   </div>

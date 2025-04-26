@@ -1,66 +1,87 @@
-<?php 
-require 'vendor/autoload.php';
+<?php
+require_once("connexion.php");
 
-// Utilise la librairie Guzzle pour les requêtes HTTP
-use GuzzleHttp\Client;
+///// LOGIN.PHP
 
-// Initialisation du client HTTP
-$client = new Client();
+if(isset($_SESSION["iduser"])) {
+    header("location:profil.php");
+}
 
-$ok = "ok";
-function logIn($password) {
-    
-    if (strlen($password) < 5) {
-        echo '<p style="color: red;">Mot de passe incorrect</p>';
-    } else {
-        echo "<p>Mot de passe correct</p>";
+if ($_POST) {
+
+    $email = $_POST["email"];
+    $password = trim($_POST["password"]);
+
+    if ($email && $password) {
+
+        // si j'ai un post
+        // je récupère email et password
+        // je récupère les infos du user en bdd pour cet email
+        // SELCT ... WHERE email =...
+        // je variabilise avec un fetch
+        $stmt = $pdo->query("SELECT * FROM user WHERE email = '$email' ");
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        // je vérifie si le mot de passer de mon form et celui en bdd sont les même
+        // password_verify
+        if ($user && password_verify($password, $user["password"])) {
+            $_SESSION["iduser"] = $user["iduser"];
+            $_SESSION["email"] = $user["email"];
+            $_SESSION["username"] = $user["username"];
+            header("location:dashboard.php");
+        } else {
+            echo "La connexion a échoué !";
+        }
+
+        // si c'est le cas
+        // j'alimente ma session avec l'id, l'email en sesssion
+
+        // message de confirmation : vous êtes connecté avec l'identifiant : email@mail.com
+
+
     }
 
-    return $password;
 }
 
 
-
-
-if ($_SERVER['REQUEST_METHOD'] == "POST") {
-    // Récupère et convertit les valeurs du formulaire
-
-    $password = $_POST['password'];
-   
-    
-
-    // Calcule la moyenne en appelant la fonction
-    $verify= logIn($password);
-}
 
 ?>
 
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="login.css">
-    <title>Login</title>
+    <title>Document</title>
 </head>
+
 <body>
-<h2>Login</h2>
-    <form action="<?php echo $_SERVER['PHP_SELF'];?>" method="POST">
-        <label for="username">Username :</label><br>
-        <input type="text" id="username" name="username" required><br><br>
+
+
+    <h1>Login</h1>
+   
+    <?php if (!isset($_SESSION["iduser"])) { ?>
+        <form  method="POST">
+
+        <label for="email">Email :</label><br>
+        <input type="email" id="email" name="email" required><br><br>
 
         <label for="password">Password :</label><br>
         <input type="password" id="password" name="password" required><br><br>
 
         <button type="submit">Login</button>
         <div class="register_form">
-            <p>Don't have account ?</p>
-            <a href="register.php">Register</a>
-            <p><?php echo $password; ?></p>
+            <p>Don't have an account ?</p>
+            <a href="inscription.php">Sign up</a>
+            
         </div>
-        
-    </form>
+
+        </form>
+
+    <?php } ?>
 
 </body>
+
 </html>
