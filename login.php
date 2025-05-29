@@ -4,7 +4,7 @@ require_once("connexion.php");
 ///// LOGIN.PHP
 
 if(isset($_SESSION["iduser"])) {
-    header("location:profil.php");
+    header("location:dashboard.php");
 }
 
 if ($_POST) {
@@ -74,7 +74,7 @@ if ($_POST) {
         <button type="submit">Login</button>
         <div class="register_form">
             <p>Don't have an account ?</p>
-            <a href="inscription.php">Sign up</a>
+            <a href="register.php">Sign up</a>
             
         </div>
 

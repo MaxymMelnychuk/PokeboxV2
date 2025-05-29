@@ -5,7 +5,7 @@ require_once("connexion.php");
 
 
 function username($username) {
-    if (strlen($username) > 4) {
+    if (strlen($username) >= 4) {
         // echo '<p style="color: green;">Username good</p>';
         return true;
 
@@ -144,6 +144,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
         
         
-        </script>
+        <script src="register.js"></script>
 </body>
 </html>
