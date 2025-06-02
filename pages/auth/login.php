@@ -1,10 +1,10 @@
 <?php
-require_once("connexion.php");
+require_once("../../config/database.php");
 
 ///// LOGIN.PHP
 
 if(isset($_SESSION["iduser"])) {
-    header("location:dashboard.php");
+    header("location:../dashboard/dashboard.php");
 }
 
 if ($_POST) {
@@ -28,9 +28,9 @@ if ($_POST) {
             $_SESSION["iduser"] = $user["iduser"];
             $_SESSION["email"] = $user["email"];
             $_SESSION["username"] = $user["username"];
-            header("location:dashboard.php");
+            header("location:../dashboard/dashboard.php");
         } else {
-            echo "La connexion a échoué !";
+            echo "Ce utilisateur n'existe pas !";
         }
 
         // si c'est le cas
@@ -48,28 +48,28 @@ if ($_POST) {
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokébox - Connexion</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="login.css">
-    <title>Document</title>
 </head>
 
 <body>
-
-
+    <a href="../landing/index.html" class="back"> <- Back</a>
     <h1>Login</h1>
    
     <?php if (!isset($_SESSION["iduser"])) { ?>
         <form  method="POST">
 
         <label for="email">Email :</label><br>
-        <input type="email" id="email" name="email" required><br><br>
+        <input type="email" id="email" name="email" required><br>
 
         <label for="password">Password :</label><br>
-        <input type="password" id="password" name="password" required><br><br>
+        <input type="password" id="password" name="password" required><br>
 
         <button type="submit">Login</button>
         <div class="register_form">

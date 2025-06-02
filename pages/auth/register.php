@@ -1,6 +1,6 @@
 <?php
 
-require_once("connexion.php");
+require_once("../../config/database.php");
 
 
 
@@ -60,7 +60,7 @@ function accepting($username, $password, $passwordRepeat, $pdo) {
                 'username' => $username
             ]);
         
-            echo "Votre user a été cocrrectement inséré en BDD";
+            // echo "Votre user a été cocrrectement inséré en BDD";
         
         }
         
@@ -99,51 +99,35 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokébox - Inscription</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="register.css">
-    <title>Login</title>
 </head>
 <body>
+    <a href="../landing/index.html" class="back"> <- Back</a>
+    <h1>Inscription</h1>
+    <form method="POST" action="">
+        <label for="username">Nom d'utilisateur :</label>
+        <input type="text" id="username" name="username" required>
 
-<h2>Sign up</h2>
-    <form action="<?php echo $_SERVER['PHP_SELF'];?>" method="POST">
-        <div>
-            <label for="username">Username :</label><br>
-            <input type="text" id="username" name="username" required><br><br>
-        </div>
+        <label for="email">Email :</label>
+        <input type="email" id="email" name="email" required>
 
-        <div>
-            <label for="password">Password :</label><br>
-            <input type="password" id="password" name="password" required><br><br>
-        </div>
+        <label for="password">Mot de passe :</label>
+        <input type="password" id="password" name="password" required>
 
-        <div>
-            <label for="passwordRepeat">Password repeat :</label><br>
-            <input type="passwordRepeat" id="passwordRepeat" name="passwordRepeat" required><br><br>
-        </div>
+        <label for="passwordRepeat">Confirmer le mot de passe :</label>
+        <input type="password" id="passwordRepeat" name="passwordRepeat" required>
 
-        <div>
-            <label for="email">Email :</label><br>
-            <input type="email" id="email" name="email" required><br><br>
-        </div>
-
-        <button onclick="accepting()" type="submit">Register</button>
-
+        <button type="submit">S'inscrire</button>
         <div class="register_form">
-            <p>Already have account ?</p>
-            <a href="login.php">Login</a>
-            <p><?php ; ?>
-            <?php ; ?></p>
+            <p>Déjà un compte ?</p>
+            <a href="login.php">Se connecter</a>
         </div>
-        
     </form>
-
-
-        
-        
-        <script src="register.js"></script>
 </body>
 </html>

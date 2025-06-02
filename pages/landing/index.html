@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
-    <link rel="icon" href="Images\pikachu_icon.svg" type="image/x-icon">
+    <link rel="icon" href="/Images/pikachu_icon.svg" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
@@ -24,7 +24,7 @@
     <header class="header"> <!--   Header   -->
             <div class="logo_container">
                  <a href="#" class="logo">
-                <img src="Images\pikachu_icon.svg" alt="logo_pikachu" width="50px" height="50px">
+                <img src="/Images/pikachu_icon.svg" alt="logo_pikachu" width="50px" height="50px">
                 <p class="link-page">V2</p>
                 </a>
             </div>
@@ -33,11 +33,11 @@
                 <div class="line"></div>
                 <div class="nav-bar">
                     <a href="index.html" class="link-page">Home</a>
-                    <a href="" class="link-page">About</a>
-                    <a href="" class="link-page">Dashboard</a>
-                    <a href="" class="link-page">Contact Us</a>
-                    <a href="shop.html" class="link-page">FAQ</a>
-                    <a href="cards.html" class="link-page">Cards</a>
+                    <a href="#about" class="link-page">About</a>
+                    <a href="../dashboard/dashboard.php" class="link-page">Dashboard</a>
+                    <a href="#contact" class="link-page">Contact Us</a>
+                    <a href="../shop/shop.html" class="link-page">Shop</a>
+                    <a href="../cards/cards.html" class="link-page">Cards</a>
                 </div>
             </nav>
 
@@ -51,10 +51,10 @@
     
 
     <div class="nav-menu"> <!-- nav menu   -->
-        <a href="" class="link-page-menu">HOME</a>
-        <a href="" class="link-page-menu">SHOP</a>
-        <a href="shop.html" class="link-page-menu">CARDS</a>
-        <a href="" class="link-page-menu">FAQ</a>
+        <a href="index.html" class="link-page-menu">HOME</a>
+        <a href="../shop/shop.html" class="link-page-menu">SHOP</a>
+        <a href="../cards/cards.html" class="link-page-menu">CARDS</a>
+        <a href="#faq" class="link-page-menu">FAQ</a>
         <div class="mode link-page-menu">
             <p href="" class="darkmode-text">DARK MODE</p>
             <input type="checkbox" id="darkmode-toggle" class="dark-none">
@@ -70,13 +70,13 @@
             <h1 class="gradient_title">Discover the world <br> of pokemons</h1>
             <p class="gradient_text">Whether you're a passionate collector, a player looking for rare cards, or a fan of the Pokémon universe, our platform offers a unique space to discover, buy, sell, and trade your Pokémon treasures.</p>
              <div class="btn_container">
-                <a class="btn_section btn_signup" href="register.php">Sign Up</a>
-                <a class="btn_section btn_login" href="login.php">Log in</a>
+                <a href="../auth/register.php" class="btn_section btn_signup">Sign Up</a>
+                <a href="../auth/login.php" class="btn_section btn_login">Log in</a>
             </div>  
         </div>
         <div class="img_section_home">
             
-            <img src="Images\pikachu.png" alt="pikachu_img" class="pikachu_img">
+            <img src="/Images/pikachu.png" alt="pikachu_img" class="pikachu_img">
         </div>
     </div> 
 
@@ -105,7 +105,7 @@
       
     <div class="section_about_us"> <!-- a propos de nous -->
         <div class="img_section_home">
-            <img src="Images\cards.svg" alt="pikachu_img" class="pikachu_img">
+            <img src="/Images/cards.svg" alt="pikachu_img" class="pikachu_img">
         </div>
         <div class="text_section_about">
             <h2 class="text_gradient">About Us</h2>
@@ -129,7 +129,7 @@
         <div class="card_section"> 
             <div class="gradient"></div>
             <div class="card_container colour">
-                <img src="Images\card-example.svg" alt="card-example" class="card_img">
+                <img src="/Images/card-example.svg" alt="card-example" class="card_img">
                 <p class="card_name up">card name</p>
                 <div class="fade_hide2 up"></div>
             </div>
@@ -138,7 +138,7 @@
         <div class="card_section none"> 
             <div class="gradient"></div>
             <div class="card_container colour">
-                <img src="Images\card-example.svg" alt="card-example" class="card_img">
+                <img src="/Images/card-example.svg" alt="card-example" class="card_img">
                 <p class="card_name up">card name</p>
                
             </div>
@@ -147,7 +147,7 @@
         <div class="card_section none"> 
             <div class="gradient"></div>
             <div class="card_container colour">
-                <img src="Images\card-example.svg" alt="card-example" class="card_img">
+                <img src="/Images/card-example.svg" alt="card-example" class="card_img">
                 <p class="card_name up">card name</p>
                 <div class="fade_hide2 up"></div>
             </div>
@@ -180,7 +180,7 @@
                         <p class="text_container_description1 none active">Trade your Pokémon cards with ease and excitement. Connect with fellow collectors, discover new cards, and expand your collection. A world of trades awaits you!</p>
 
                         <h4 class="text_container_title2 none" >Sale</h4>
-                        <p class="text_container_description2 none">Sell your Pokémon cards to a global community. Set your price, list your items, and let the collectors come to you. It’s simple, secure, and the best way to earn from your collection!</p>
+                        <p class="text_container_description2 none">Sell your Pokémon cards to a global community. Set your price, list your items, and let the collectors come to you. It's simple, secure, and the best way to earn from your collection!</p>
 
                         <h4 class="text_container_title3 none" >Buy</h4>
                         <p class="text_container_description3 none">Browse through a vast selection of Pokémon cards and find the perfect addition to your collection. Enjoy a seamless shopping experience with trusted sellers and secure transactions.</p>

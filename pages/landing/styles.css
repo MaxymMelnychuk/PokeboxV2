@@ -30,12 +30,11 @@ body {
 }
 
 .circles {
-  
-   position: relative;
+    position: relative;
     width: 100%;
     height: 100%;
     background-position: center;
-    background-image: var(--background-image);
+    background-image: url("../../Images/test.png");
 }
 
 button {
@@ -128,7 +127,7 @@ button {
     --border-changes: #856C1A;
     --line-opacity: linear-gradient(to right, #0000 5%, #ffc014  35%, #ffc014 50%, rgba(246, 193, 59, 0.8) 65%, #0000 95%);
     --footer-bg: #795d025b; /* #604e19 */
-    --background-image: url("Images/test.png");
+    --background-image: url("../../Images/test.png");
 
     
 }

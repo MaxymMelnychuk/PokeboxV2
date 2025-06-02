@@ -89,11 +89,29 @@
     padding: 0 40px;
     padding-bottom: 100px;
 }
-    
-
-  .pokemon {
-    width: 250px;
+    .pokemon {
+      width: 250px;
     height: 350px;
+    }
+
+    .pokemon_container {
+      width: 150px;
+    height: 200px;
+    }
+
+
+    .container, .container2 {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: center;
+      height: 100%;
+      width: 100%;
+      
+    }
+
+  .pokemon, .pokemon_container {
+    
     display: flex;
     position: relative;
     flex-direction: column;
@@ -107,15 +125,34 @@
     transition: linear 0.1s;
 }
 
-.pokemon:hover {
+.pokemon:hover, .pokemon_container:hover {
   box-shadow: rgba(255, 255, 255, 0.568) 0px 0px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
   scale: 1.05;
   z-index: 5;
 }
 
+.place_friend_cards, .place_my_cards {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  border: solid 1px blue;
+  gap: 0.5rem;
+  padding: 2rem;
+  align-items: center;
+  justify-content: center;
+}
+
+
+
   .image-pokemon {
     width: 175px;
     
+}
+
+.mini-pokemon {
+  width: 75px;
 }
 
 .name {
@@ -179,39 +216,95 @@
   cursor: not-allowed ;
 } 
 
-  #inventory, #trade-zone {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin: 20px;
-  padding: 10px;
-  border: 2px dashed #ccc;
+  .exchange {
+    width: 100%;
+    display: flex;
+    
+    
+  }
+  .my_cards, .friend_cards {
+    width: 50%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    
+
+  }
+
+  .my_cards {
+    background-color: rgb(61, 61, 100);
+  }
+
+  .friend_cards {
+    background-color: rgb(23, 23, 69);
+  }
+  
+  #confirm-trade {
+  display: none; /* caché par défaut */
 }
 
-.card {
-  width: 100px;
-  height: 100px;
+.trade-item {
+  margin-bottom: 1em;
+  padding: 1em;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f5f5f5;
+}
+
+.trade-cards {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #f0f0f0;
-  border-radius: 5px;
+  justify-content: space-between;
+  margin: 1em 0;
+}
+
+.sender-cards, .receiver-cards {
+  flex: 1;
+  padding: 0 1em;
+}
+
+.cancel-trade-btn {
+  background-color: #ff4444;
+  color: white;
+  border: none;
+  padding: 0.5em 1em;
+  border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
-.card.selected {
-  background-color: #a0e0a0;
+.cancel-trade-btn:hover {
+  background-color: #cc0000;
 }
 
-#trade-zone {
-  min-height: 150px;
+#pendingTradesContainer {
+  margin: 2em 0;
 }
 
+#pendingTradesContainer h2 {
+  margin-bottom: 1em;
+  color: #333;
+}
 
+.cancel-trade {
+  padding: 0.5rem;
+  background-color: rgb(112, 65, 65);
+  border-radius: 0.5rem;
+  color: white;
+  border: none;
+  cursor: pointer;
+  margin-left: 1rem;
+}
 
+.cancel-trade:hover {
+  background-color: rgb(84, 49, 49);
+}
 
-  
+.status-info {
+  color: #ffd700;
+}
+
   /* Responsive mobile */
   @media screen and (max-width: 768px) {
     .wrapper {
