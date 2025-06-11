@@ -1,22 +1,5 @@
 <?php
 
-// ce que lon va mettre dans message, de ce que lon va parler, de 404Systeme
-
-//fasse videos a la place des ateliers
-
-//helper qui occupe des questions
-//idées du helpeer projet
-//envoi
-//qui reste ou non
-//si aimer cette anneé
-//reu nico
-//distanciel
-
-//message 6 juin
-
-//AG est il bien si on annonce 
-
-//est ce que vous aussi vous voulez si vous parler au debut de AG, et ensuite vous passez la parole ensuite pour annonce
 
 
 
@@ -42,8 +25,58 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo json_encode(['success' => false, 'message' => $e->getMessage()]);
             exit;
         }
+    } else if (isset($data['acceptInviteUserId'])) {
+      try {
+        
+        header('Content-Type: application/json');
+       
+    $stmt = $pdo->prepare("UPDATE friendships SET status = 1 WHERE sender_id = ? AND receiver_id = ? AND status = ?");
+    $stmt->execute([ $data['acceptInviteUserId'], $_SESSION['iduser'], 0 ]);
+    echo json_encode(['success' => true]);
+            exit;
+      } catch (PDOException $e) {
+       echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+            exit;
+      }
+    } else if (isset($data['cancelInviteUserId']) || isset($data['refuseInviteUserId'])) {
+       try {
+        header('Content-Type: application/json');
+       
+  $idk = $data['cancelInviteUserId'] ?? $data['refuseInviteUserId'];
+ $stmt = $pdo->prepare("
+            DELETE FROM friendships 
+            WHERE ((sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?)) 
+            AND status = 0
+        ");
+$stmt->execute([$_SESSION['iduser'], $idk, $idk, $_SESSION['iduser']]);
+    echo json_encode(['success' => true]);
+            exit;
+      } catch (PDOException $e) {
+       echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+            exit;
+      }
+    } else if (isset($data['deleteFriend'])) {
+         try {
+        header('Content-Type: application/json');
+       
+  
+$stmt = $pdo->prepare("
+    DELETE FROM friendships 
+    WHERE 
+    ((sender_id = ? AND receiver_id = ?) OR (sender_id = ? AND receiver_id = ?)) 
+    AND status = 1
+");
+$stmt->execute([$_SESSION['iduser'], $data['deleteFriend'], $data['deleteFriend'], $_SESSION['iduser']]);
+    echo json_encode(['success' => true]);
+            exit;
+      } catch (PDOException $e) {
+       echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+            exit;
+      }
     }
 }
+
+
 
 // Utilise la librairie Guzzle pour les requêtes HTTP
 // use GuzzleHttp\Client;
@@ -111,7 +144,7 @@ $cards->execute([
 ]);
 $obtained = $cards->fetchColumn();
 
-// Débogage
+
 if ($obtained === false) {
     $obtained = 0; // si rien, on met zero
 }
@@ -342,11 +375,25 @@ if (isset($_GET['page']) && $_GET['page'] == 'amis') {
         $data = json_decode($input, true);
 
     $pending = 0;
+
+
+
+
+
+     $info = $pdo->prepare("SELECT name, url FROM cards");
+$info->execute();
+$detailsTrade = $info->fetchAll(PDO::FETCH_ASSOC);
+ ob_start();
+echo json_encode($detailsTrade);
+$output = ob_get_clean();
+    
    
 
 
     // post du js
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+      $input = file_get_contents('php://input');
+    $data = json_decode($input, true);
     if (isset($data['trade'])) { //si bouton trade
       //recup donées mit dans zones de echange
         $me = $data['myUsername']; //moi
@@ -377,6 +424,8 @@ if (isset($_GET['page']) && $_GET['page'] == 'amis') {
 
     // Annuler un trade
     if (isset($data['cancelTradeId'])) {
+       
+        header('Content-Type: application/json');
         $tradeId = (int)$data['cancelTradeId'];
 
         // supprime le trade avce cartes que je veut
@@ -395,84 +444,99 @@ if (isset($_GET['page']) && $_GET['page'] == 'amis') {
     if (isset($data['acceptTradeId'])) {
         $tradeId = (int)$data['acceptTradeId'];
 
-        // recupere qui envoyer demande de trade 
-        $stmt = $pdo->prepare("SELECT sender_name, receiver_name FROM trades WHERE id = ?");
-        $stmt->execute([$tradeId]);
-        $trade = $stmt->fetch(PDO::FETCH_ASSOC);
+       $stmt = $pdo->prepare("SELECT sender_name, receiver_name FROM trades WHERE id = ?");
+      $stmt->execute([$tradeId]);
+      $trade = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if (!$trade) {
-            echo json_encode(['success' => false, 'message' => 'Trade non trouvé']);
-            exit;
-        }
+      if (!$trade) {
+          echo json_encode(['success' => false, 'message' => 'Trade non trouvé']);
+          exit;
+      }
 
-        $sender = $trade['sender_name'];
-        $receiver = $trade['receiver_name'];
+      $sender = $trade['sender_name'];
+      $receiver = $trade['receiver_name'];
 
-        // Récupérer les cartes proposées
-        $stmt = $pdo->prepare("SELECT card_name, card_quantity_sender, card_quantity_friend FROM trading_cards WHERE trade_id = ?");
-        $stmt->execute([$tradeId]);
-        $cards = $stmt->fetchAll(PDO::FETCH_ASSOC);
+     // Récupérer l'expéditeur et le destinataire
+    $stmt = $pdo->prepare("SELECT sender_name, receiver_name FROM trades WHERE id = ?");
+    $stmt->execute([$tradeId]);
+    $trade = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        //commence de translmettres les cartes
-        $pdo->beginTransaction();
+    if (!$trade) {
+        echo json_encode(['success' => false, 'message' => 'Trade non trouvé']);
+        exit;
+    }
 
-        try {
-            // pour chaque carte retirer du sender puis ajouter au receiver
-            // et inversement
+    $sender = $trade['sender_name'];
+    $receiver = $trade['receiver_name'];
 
-            foreach ($cards as $card) {
-                $name = $card['card_name'];
-                $qtySender = (int)$card['card_quantity_sender'];
-                $qtyFriend = (int)$card['card_quantity_friend'];
+    // Récupérer les cartes proposées avec URL
+    $stmt = $pdo->prepare("
+        SELECT tc.card_name, tc.card_quantity_sender, tc.card_quantity_friend, c.url
+        FROM trading_cards tc
+        JOIN cards c ON tc.card_name = c.name
+        WHERE tc.trade_id = ?
+    ");
+    $stmt->execute([$tradeId]);
+    $cards = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                // retire cartes du sender
-                if ($qtySender > 0) {
-                    $stmt = $pdo->prepare("UPDATE cards_users SET quantity = quantity - ? WHERE user_name = ? AND card_name = ?");
-                    $stmt->execute([$qtySender, $sender, $name]);
-                }
-                // et ajoute au receiver
-                if ($qtySender > 0) {
-                    
-                    $stmt = $pdo->prepare("SELECT id FROM cards_users WHERE user_name = ? AND card_name = ?");
-                    $stmt->execute([$receiver, $name]);
-                    if ($stmt->fetch()) {
-                        $stmt = $pdo->prepare("UPDATE cards_users SET quantity = quantity + ? WHERE user_name = ? AND card_name = ?");
-                        $stmt->execute([$qtySender, $receiver, $name]);
-                    } else {
-                        $stmt = $pdo->prepare("INSERT INTO cards_users (user_name, card_name, quantity) VALUES (?, ?, ?)");
-                        $stmt->execute([$receiver, $name, $qtySender]);
-                    }
-                }
+    $pdo->beginTransaction();
 
-                // meme chose mais linverse
-                if ($qtyFriend > 0) {
-                    $stmt = $pdo->prepare("UPDATE cards_users SET quantity = quantity - ? WHERE user_name = ? AND card_name = ?");
-                    $stmt->execute([$qtyFriend, $receiver, $name]);
+    try {
+        foreach ($cards as $card) {
+            $name = $card['card_name'];
+            $qtySender = (int)$card['card_quantity_sender'];
+            $qtyFriend = (int)$card['card_quantity_friend'];
+            $url = $card['url']; // URL récupérée depuis la table cards
 
-                    $stmt = $pdo->prepare("SELECT id FROM cards_users WHERE user_name = ? AND card_name = ?");
-                    $stmt->execute([$sender, $name]);
-                    if ($stmt->fetch()) {
-                        $stmt = $pdo->prepare("UPDATE cards_users SET quantity = quantity + ? WHERE user_name = ? AND card_name = ?");
-                        $stmt->execute([$qtyFriend, $sender, $name]);
-                    } else {
-                        $stmt = $pdo->prepare("INSERT INTO cards_users (user_name, card_name, quantity) VALUES (?, ?, ?)");
-                        $stmt->execute([$sender, $name, $qtyFriend]);
-                    }
+            // --- TRANSFERT DU SENDER → RECEIVER ---
+            if ($qtySender > 0) {
+                // Retire du sender
+                $stmt = $pdo->prepare("UPDATE cards_users SET quantity = quantity - ? WHERE user_name = ? AND card_name = ?");
+                $stmt->execute([$qtySender, $sender, $name]);
+
+                // Ajoute au receiver
+                $stmt = $pdo->prepare("SELECT id FROM cards_users WHERE user_name = ? AND card_name = ?");
+                $stmt->execute([$receiver, $name]);
+                if ($stmt->fetch()) {
+                    $stmt = $pdo->prepare("UPDATE cards_users SET quantity = quantity + ? WHERE user_name = ? AND card_name = ?");
+                    $stmt->execute([$qtySender, $receiver, $name]);
+                } else {
+                    $stmt = $pdo->prepare("INSERT INTO cards_users (user_name, card_name, quantity, url) VALUES (?, ?, ?, ?)");
+                    $stmt->execute([$receiver, $name, $qtySender, $url]);
                 }
             }
 
-            // si tout est bon on met 1
-            $stmt = $pdo->prepare("UPDATE trades SET status = 1 WHERE id = ?");
-            $stmt->execute([$tradeId]);
-            //valide trade
-            $pdo->commit();
+            // --- TRANSFERT DU RECEIVER → SENDER ---
+            if ($qtyFriend > 0) {
+                // Retire du receiver
+                $stmt = $pdo->prepare("UPDATE cards_users SET quantity = quantity - ? WHERE user_name = ? AND card_name = ?");
+                $stmt->execute([$qtyFriend, $receiver, $name]);
 
-            echo json_encode(['success' => true]);
-        } catch (Exception $e) {
-            $pdo->rollBack(); //sinon annule trade en revennont en arriere
-            echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+                // Ajoute au sender
+                $stmt = $pdo->prepare("SELECT id FROM cards_users WHERE user_name = ? AND card_name = ?");
+                $stmt->execute([$sender, $name]);
+                if ($stmt->fetch()) {
+                    $stmt = $pdo->prepare("UPDATE cards_users SET quantity = quantity + ? WHERE user_name = ? AND card_name = ?");
+                    $stmt->execute([$qtyFriend, $sender, $name]);
+                } else {
+                    $stmt = $pdo->prepare("INSERT INTO cards_users (user_name, card_name, quantity, url) VALUES (?, ?, ?, ?)");
+                    $stmt->execute([$sender, $name, $qtyFriend, $url]);
+                }
+            }
         }
-        exit;
+
+        // Marquer le trade comme validé
+        $stmt = $pdo->prepare("UPDATE trades SET status = 1 WHERE id = ?");
+        $stmt->execute([$tradeId]);
+
+        $pdo->commit();
+        echo json_encode(['success' => true]);
+    } catch (Exception $e) {
+        $pdo->rollBack();
+        echo json_encode(['success' => false, 'message' => $e->getMessage()]);
+    }
+
+    exit;
     }
 
     // recupere toutes trades en attente
@@ -596,10 +660,64 @@ $alreadyFriends = $stmt3->fetchAll(PDO::FETCH_COLUMN);
 <body>
   <div class="wrapper" id="wrapper">
     <!-- Sidebar -->
-   
+   <nav class="navigation">
+    <a href="../landing/index.html" class="link-page-menu">HOME</a>
+        <a href="dashboard.php" class="link-page-menu">PROFIL</a>
+        <a href="?page=cartes" class=" link-page-menu">MES CARTES</a>
+        <a href="?page=amis" class="link-page-menu">TRADE</a>
+       
+        
+   </nav>
+   <div class="container_add_friends">
+    <div class="add_users">
+      <div class="search-wrapper" role="search" aria-label="Recherche dynamique">
+  <input
+    type="search"
+    placeholder="Search..."
+    aria-live="polite"
+    aria-autocomplete="list"
+    autocomplete="off"
+  />
+</div>
+      <div class="close">
+        <svg class="close_icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M10.0303 8.96965C9.73741 8.67676 9.26253 8.67676 8.96964 8.96965C8.67675 9.26255 8.67675 9.73742 8.96964 10.0303L10.9393 12L8.96966 13.9697C8.67677 14.2625 8.67677 14.7374 8.96966 15.0303C9.26255 15.3232 9.73743 15.3232 10.0303 15.0303L12 13.0607L13.9696 15.0303C14.2625 15.3232 14.7374 15.3232 15.0303 15.0303C15.3232 14.7374 15.3232 14.2625 15.0303 13.9696L13.0606 12L15.0303 10.0303C15.3232 9.73744 15.3232 9.26257 15.0303 8.96968C14.7374 8.67678 14.2625 8.67678 13.9696 8.96968L12 10.9393L10.0303 8.96965Z" ></path> <path fill-rule="evenodd" clip-rule="evenodd" d="M12 1.25C6.06294 1.25 1.25 6.06294 1.25 12C1.25 17.9371 6.06294 22.75 12 22.75C17.9371 22.75 22.75 17.9371 22.75 12C22.75 6.06294 17.9371 1.25 12 1.25ZM2.75 12C2.75 6.89137 6.89137 2.75 12 2.75C17.1086 2.75 21.25 6.89137 21.25 12C21.25 17.1086 17.1086 21.25 12 21.25C6.89137 21.25 2.75 17.1086 2.75 12Z" ></path> </g></svg>
+      </div>
+    </div>
+  </div>
     <section class="principal-content">
+      
     <header class="content-header ">
-      <p class="time"></p>
+      <div class="logout_container" >
+        <div class="container_friends"><div class="friends"><h1>Friends</h1><svg class="add_friends close" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" stroke-width="3" stroke="#ffffff" fill="none"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><circle cx="29.22" cy="16.28" r="11.14"></circle><path d="M41.32,35.69c-2.69-1.95-8.34-3.25-12.1-3.25h0A22.55,22.55,0,0,0,6.67,55h29.9"></path><circle cx="45.38" cy="46.92" r="11.94"></circle><line x1="45.98" y1="39.8" x2="45.98" y2="53.8"></line><line x1="38.98" y1="46.8" x2="52.98" y2="46.8"></line></g></svg></div></div>
+        
+        <div class="mode link-page-menu">
+            <p href="" class="darkmode-text">DARK MODE</p>
+            <input type="checkbox" id="darkmode-toggle" class="dark-none">
+            <label for="darkmode-toggle"></label> <p class="ifTrue">NON</p>
+        </div>
+         <a href="?action=deconnexion" class="logout">DECONNEXION</a>
+       
+      </div>
+      <div class="left_section_header">
+          <?php
+  
+
+
+ 
+    echo "<h1> Salut,  " . $_SESSION["username"] . "</h1>"; ?>
+      </div>
+      <div class="right_section_header">
+        
+        <div class="notif_wrap">
+        <svg class="notif" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12.02 2.90991C8.70997 2.90991 6.01997 5.59991 6.01997 8.90991V11.7999C6.01997 12.4099 5.75997 13.3399 5.44997 13.8599L4.29997 15.7699C3.58997 16.9499 4.07997 18.2599 5.37997 18.6999C9.68997 20.1399 14.34 20.1399 18.65 18.6999C19.86 18.2999 20.39 16.8699 19.73 15.7699L18.58 13.8599C18.28 13.3399 18.02 12.4099 18.02 11.7999V8.90991C18.02 5.60991 15.32 2.90991 12.02 2.90991Z" stroke="#c1a057" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round"></path> <path d="M13.87 3.19994C13.56 3.10994 13.24 3.03994 12.91 2.99994C11.95 2.87994 11.03 2.94994 10.17 3.19994C10.46 2.45994 11.18 1.93994 12.02 1.93994C12.86 1.93994 13.58 2.45994 13.87 3.19994Z" stroke="#c1a057" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M15.02 19.0601C15.02 20.7101 13.67 22.0601 12.02 22.0601C11.2 22.0601 10.44 21.7201 9.90002 21.1801C9.36002 20.6401 9.02002 19.8801 9.02002 19.0601" stroke="#c1a057" stroke-width="1.5" stroke-miterlimit="10"></path> </g></svg>
+          </div>
+          <div class="group_pfp">
+      <img class="pfp" src="https://i1.sndcdn.com/artworks-s2V9VTRXki8Nr7ad-iHpE6w-t500x500.jpg" alt="">
+       <svg class="absolute_arrow" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M5.70711 9.71069C5.31658 10.1012 5.31658 10.7344 5.70711 11.1249L10.5993 16.0123C11.3805 16.7927 12.6463 16.7924 13.4271 16.0117L18.3174 11.1213C18.708 10.7308 18.708 10.0976 18.3174 9.70708C17.9269 9.31655 17.2937 9.31655 16.9032 9.70708L12.7176 13.8927C12.3271 14.2833 11.6939 14.2832 11.3034 13.8927L7.12132 9.71069C6.7308 9.32016 6.09763 9.32016 5.70711 9.71069Z" fill="#c1a057"></path> </g></svg>
+       
+       </div>
+      <div class="notif_container">Notifications</div>
+      </div>
     <div class="burger">
     <span></span>
     <span></span>
@@ -643,7 +761,7 @@ $alreadyFriends = $stmt3->fetchAll(PDO::FETCH_COLUMN);
 
 
   if (!isset($_GET["page"])) {
-    echo "<h1> Salut,  " . $_SESSION["username"] . "</h1>";
+   
 
      ?>
 
@@ -660,6 +778,7 @@ $alreadyFriends = $stmt3->fetchAll(PDO::FETCH_COLUMN);
 
         foreach($_SESSION['last_cards'] as $card) {
           echo "<div class='pokemon'>"; // Conteneur par pokemon
+  
           echo '<img class="image-pokemon" src="' . $card['url'] . '">';
           echo '<div class="name">' . $card['name'] . '</div>';
           
@@ -842,6 +961,29 @@ $alreadyFriends = $stmt3->fetchAll(PDO::FETCH_COLUMN);
 //       ok.classList.toggle('show');
 //      })
 // });
+const arrow = document.querySelector('.absolute_arrow')
+const open = document.querySelector('.logout_container')
+const ok = document.querySelector('.group_pfp')
+ok.addEventListener('click', () => {
+  open.classList.toggle('opened')
+  arrow.classList.toggle('arrow_return')
+})
+
+const notif = document.querySelector('.notif_wrap')
+const notifContainer = document.querySelector('.notif_container')
+notif.addEventListener('click', () => {
+  notifContainer.classList.toggle('opened')
+ 
+})
+
+const addButtons = document.querySelectorAll('.close');
+const addContainer = document.querySelector('.container_add_friends');
+
+addButtons.forEach(add => {
+  add.addEventListener('click', () => {
+    addContainer.classList.toggle('opened');
+  });
+});
     
      
 //flipper une carte
@@ -851,15 +993,7 @@ $alreadyFriends = $stmt3->fetchAll(PDO::FETCH_COLUMN);
     });
 });
 
-// montrer heure
-   setInterval(() => {
-    const date = new Date();
-    const heure = String(date.getHours()).padStart(2, '0');    // Ajoute un 0 si < 10
-    const minutes = String(date.getMinutes()).padStart(2, '0'); // Ajoute un 0 si < 10
-    const secondes = String(date.getSeconds()).padStart(2, '0'); // Ajoute un 0 si < 10
-    
-    document.querySelector('.time').textContent = `${heure}:${minutes}:${secondes}`;
-}, 1000);
+
 
   //selectionne de tout ce que jaurias besoin du php
     let pendingTrades = [];
@@ -985,18 +1119,30 @@ $alreadyFriends = $stmt3->fetchAll(PDO::FETCH_COLUMN);
       const alreadyFriends = <?= json_encode($alreadyFriends); ?>;
       const alreadyInvited = <?= json_encode($alreadyInvited); ?>;
       const receivedInvites = <?= json_encode($receivedInvites); ?>;
-
+console.log(alreadyInvited);
       const container = document.getElementById('friends-list');
+      const friendAdd = document.querySelector('.add_users');
+      const other = document.querySelector('.container_friends');
+      const notification = document.querySelector('.notif_container');
       
       if (container) {
         friends.forEach(friend => {
+         
           const isInvited = alreadyInvited.includes(friend.iduser);
           const hasInvitedMe = receivedInvites.includes(friend.iduser);
           const allIds = friends.map(f => f.iduser);
           const all = allIds.includes(friend.iduser); 
 
+          console.log('Friend ID:', friend.iduser, ' (type:', typeof friend.iduser, ')');
+          console.log('alreadyInvited:', alreadyInvited, ' (type:', typeof alreadyInvited[0], ')');
+
           const wraping = document.createElement('div');
           wraping.classList.add('wraping');
+
+          const image = document.createElement('img');
+          image.src = 'https://tse4.mm.bing.net/th/id/OIP.hRtT9qzAGzLaN2QWHTR-RAAAAA?rs=1&pid=ImgDetMain';
+          image.classList.add('imgPfp')
+          wraping.appendChild(image)
 
           const statDiv = document.createElement('div');
           statDiv.textContent = friend.username;
@@ -1010,11 +1156,13 @@ $alreadyFriends = $stmt3->fetchAll(PDO::FETCH_COLUMN);
             acceptBtn.classList.add('invite');
             wraping.appendChild(acceptBtn);
 
-            const refuseBtn = document.createElement('button');
-            refuseBtn.textContent = "Refuser";
-            refuseBtn.dataset.userid = friend.iduser;
-            refuseBtn.classList.add('cancel');
-            wraping.appendChild(refuseBtn);
+            const refuseInvite = document.createElement('button');
+            refuseInvite.textContent = "Refuser";
+            refuseInvite.dataset.userid = friend.iduser;
+            refuseInvite.classList.add('cancel-invite');
+            wraping.appendChild(refuseInvite);
+
+            other.appendChild(wraping)
             // si jai inviter
           } else if (isInvited) {
            
@@ -1024,101 +1172,109 @@ $alreadyFriends = $stmt3->fetchAll(PDO::FETCH_COLUMN);
             inviteBtn.disabled = true;
             wraping.appendChild(inviteBtn);
 
-            const cancelBtn = document.createElement('button');
-            cancelBtn.textContent = "Annuler";
-            cancelBtn.classList.add('cancel');
-            cancelBtn.dataset.userid = friend.iduser;
-            wraping.appendChild(cancelBtn);
+            
+
+
+
+            
+
+            const cancelInvite = document.createElement('button');
+            cancelInvite.textContent = "Annuler";
+            cancelInvite.classList.add('cancel-invite');
+            cancelInvite.dataset.userid = friend.iduser;
+            wraping.appendChild(cancelInvite);
+
+            notification.appendChild(wraping);
+            
 
           } else if (alreadyFriends.includes(friend.iduser)) {
-            // bouton ami
-            const btn = document.createElement('button');
-            btn.textContent = "Ami(e)";
-            btn.classList.add('invite');
-            btn.dataset.userid = friend.iduser;
-            btn.disabled = true;
-            wraping.appendChild(btn);
+           console.log(`🟢 ${friend.iduser} → alreadyFriend`);
 
-            // si il ya un trade en attente avec ce ami
-            const pendingTradeWithFriend = status_trade ? status_trade.find(trade => 
-              (trade.sender_name === session_username && trade.receiver_name === friend.username) ||
-              (trade.receiver_name === session_username && trade.sender_name === friend.username)
-            ) : null;
+  
+  const wrapOther = document.createElement('div');
+  wrapOther.classList.add('wraping');
 
-            if (pendingTradeWithFriend) {
-              // tri dans sender ou receiver
-              const isSender = pendingTradeWithFriend.sender_name === session_username;
-              const isReceiver = pendingTradeWithFriend.receiver_name === session_username;
+  const imgOther = document.createElement('img');
+  imgOther.src = 'https://tse4.mm.bing.net/th/id/OIP.hRtT9qzAGzLaN2QWHTR-RAAAAA?rs=1&pid=ImgDetMain';
+  imgOther.classList.add('imgPfp');
+  wrapOther.appendChild(imgOther);
 
-              if (isSender) {
-                //en attente si sender
-                const waiting = document.createElement('span');
-                waiting.textContent = "Trade en attente";
-                waiting.classList.add('status-info');
-                wraping.appendChild(waiting);
+  const statOther = document.createElement('div');
+  statOther.textContent = friend.username;
+  wrapOther.appendChild(statOther);
 
-                // annuler trade
-                const cancelBtn = document.createElement('button');
-                cancelBtn.textContent = "Annuler";
-                cancelBtn.classList.add('cancel-trade');
-                cancelBtn.dataset.tradeid = pendingTradeWithFriend.id;
-                wraping.appendChild(cancelBtn);
+  const removeFriendBtn = document.createElement('button');
+  removeFriendBtn.textContent = "Remove from friend";
+  removeFriendBtn.classList.add('remove-friend');
+  removeFriendBtn.dataset.userid = friend.iduser;
+  wrapOther.appendChild(removeFriendBtn);
 
-                // click annuler qui envoi json au php et annuler dans bddd
-                cancelBtn.addEventListener('click', () => {
-                  fetch('dashboard.php?page=amis', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                      cancelTradeId: pendingTradeWithFriend.id
-                    })
-                  })
-                  .then(res => res.json())
-                  .then(data => {
-                    if (data.success) {
-                      // supprime boutons
-                      waiting.remove();
-                      cancelBtn.remove();
+  other.appendChild(wrapOther);
 
-                      // et reaffiche bouton trade
-                      const tradeBtn = document.createElement('button');
-                      tradeBtn.textContent = "Trade";
-                      tradeBtn.classList.add('trading');
-                      tradeBtn.dataset.userid = friend.username;
-                      wraping.appendChild(tradeBtn);
+ 
+  const wrapContainer = document.createElement('div');
+  wrapContainer.classList.add('wraping');
 
-                      // reajout levenement click sur trade :/
-                      tradeBtn.addEventListener('click', () => {
-                        currentTradingFriend = friend.username;
-                        updateConfirmVisibility();
-                        setupTradeObserver();
-                      });
-                    } else {
-                      alert("Erreur lors de l'annulation du trade");
-                    }
-                  })
-                  .catch(error => {
-                    alert("Erreur lors de l'annulation du trade");
-                  });
-                });
-              } else if (isReceiver) {
-                // valider echange si receiver
-                const validateBtn = document.createElement('button');
-                validateBtn.textContent = `Valider l'échange avec ${friend.username}`;
-                validateBtn.classList.add('confirm-trade');
-                validateBtn.dataset.tradeid = pendingTradeWithFriend.id;
-                wraping.appendChild(validateBtn);
+  const imgContainer = document.createElement('img');
+  imgContainer.src = 'https://tse4.mm.bing.net/th/id/OIP.hRtT9qzAGzLaN2QWHTR-RAAAAA?rs=1&pid=ImgDetMain';
+  imgContainer.classList.add('imgPfp');
+  wrapContainer.appendChild(imgContainer);
 
-                // pour voir les details
-                const detailsBtn = document.createElement('button');
-                detailsBtn.textContent = "Voir détails";
-                detailsBtn.classList.add('view-details');
-                detailsBtn.dataset.tradeid = pendingTradeWithFriend.id;
-                wraping.appendChild(detailsBtn);
+  const statContainer = document.createElement('div');
+  statContainer.textContent = friend.username;
+  wrapContainer.appendChild(statContainer);
 
-                detailsBtn.addEventListener('click', () => {
-                  // details du trade recup
-                  fetch('dashboard.php?page=amis', {
+ 
+  const pendingTradeWithFriend = status_trade ? status_trade.find(trade => 
+    (trade.sender_name === session_username && trade.receiver_name === friend.username) ||
+    (trade.receiver_name === session_username && trade.sender_name === friend.username)
+  ) : null;
+
+  if (pendingTradeWithFriend) {
+    const isSender = pendingTradeWithFriend.sender_name === session_username;
+    const isReceiver = pendingTradeWithFriend.receiver_name === session_username;
+
+    if (isSender) {
+      const waiting = document.createElement('span');
+      waiting.textContent = "Trade en attente";
+      waiting.classList.add('status-info');
+      wrapContainer.appendChild(waiting);
+
+      const cancelInvite = document.createElement('button');
+      cancelInvite.textContent = "Annuler";
+      cancelInvite.classList.add('cancel-trade');
+      cancelInvite.dataset.tradeid = pendingTradeWithFriend.id;
+      wrapContainer.appendChild(cancelInvite);
+
+      cancelInvite.addEventListener('click', () => {
+        // ... fetch  je vais metttre apres  ...
+      });
+
+    } else if (isReceiver) {
+      const validateBtn = document.createElement('button');
+      validateBtn.textContent = `Valider l'échange avec ${friend.username}`;
+      validateBtn.classList.add('confirm-trade-btn');
+      validateBtn.dataset.tradeid = pendingTradeWithFriend.id;
+      wrapContainer.appendChild(validateBtn);
+
+      validateBtn.addEventListener('click', () => {
+        // ...  fetch  je vais metttre apres ...
+      });
+
+      const cancelTrade = document.createElement('button');
+      cancelTrade.textContent = `Refuser l'échange avec ${friend.username}`;
+      cancelTrade.classList.add('cancel-trade-from-friend');
+      cancelTrade.dataset.tradeid = pendingTradeWithFriend.id;
+      wrapContainer.appendChild(cancelTrade);
+
+      const detailsBtn = document.createElement('button');
+      detailsBtn.textContent = "Voir détails";
+      detailsBtn.classList.add('view-details');
+      detailsBtn.dataset.tradeid = pendingTradeWithFriend.id;
+      wrapContainer.appendChild(detailsBtn);
+
+      detailsBtn.addEventListener('click', () => {
+         fetch('dashboard.php?page=amis', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ getPendingTrades: true, username: session_username })
@@ -1126,59 +1282,125 @@ $alreadyFriends = $stmt3->fetchAll(PDO::FETCH_COLUMN);
                   .then(res => res.json())
                   .then(data => {
                     if (data.success) {
-                      const trade = data.trades.find(t => t.trade.id === pendingTradeWithFriend.id);
-                      if (trade) {
-                        let message = "Détails de l'échange :\n\n";
-                        message += "Cartes proposées par " + trade.trade.sender_name + ":\n";
-                        trade.cards.forEach(card => {
-                          if (card.card_quantity_sender > 0) {
-                            message += `- ${card.card_name} (x${card.card_quantity_sender})\n`;
-                          }
-                        });
-                        message += "\nVos cartes proposées :\n";
-                        trade.cards.forEach(card => {
-                          if (card.card_quantity_friend > 0) {
-                            message += `- ${card.card_name} (x${card.card_quantity_friend})\n`;
-                          }
-                        });
-                        alert(message);
-                      }
+                      
+                       const detailsTrade= <?= json_encode($detailsTrade) ?>;
+                       console.log(detailsTrade);
+                       
+                      const trade = data.trades[0]; 
+      
+      if (!trade) {
+        return alert("Trade introuvable");
+      }
+
+      const overlay = document.createElement('div');
+      overlay.className = 'trade-overlay';
+
+      const modal = document.createElement('div');
+      modal.className = 'trade-modal';
+
+      // Construction du HTML
+      let html = `
+        <h2>Échange entre ${trade.trade.sender_name} et toi</h2>
+        <h3>Cartes proposées par ${trade.trade.sender_name} :</h3>
+        <div class="card-list">
+      `;
+
+  
+      trade.cards.forEach(card => {
+        if (card.card_quantity_sender > 0) {
+         
+          const found = detailsTrade.find(p => p.name.toLowerCase() === card.card_name.toLowerCase());
+          const imageUrl = found ? found.url : 'images/default.png';
+
+          html += `
+            <div class="card-item">
+              <img src="${imageUrl}" alt="${card.card_name}" class="card-img">
+              <p>${card.card_name} (x${card.card_quantity_sender})</p>
+            </div>
+          `;
+        }
+      });
+
+      html += `</div><h3>Vos cartes proposées :</h3><div class="card-list">`;
+
+
+      trade.cards.forEach(card => {
+        if (card.card_quantity_friend > 0) {
+         
+          const found = detailsTrade.find(p => p.name.toLowerCase() === card.card_name.toLowerCase());
+          const imageUrl = found ? found.url : 'images/default.png';
+
+          html += `
+            <div class="card-item">
+              <img src="${imageUrl}" alt="${card.card_name}" class="card-img">
+              <p>${card.card_name} (x${card.card_quantity_friend})</p>
+            </div>
+          `;
+        }
+      });
+
+      html += `</div><button class="close-trade-modal">Fermer</button>`;
+
+      modal.innerHTML = html;
+      overlay.appendChild(modal);
+      document.body.appendChild(overlay);
+
+      // Fermeture de la modale
+      overlay.querySelector('.close-trade-modal').addEventListener('click', () => {
+        overlay.remove();
+      });
+   
+
+      
+
+     
+     
+
+
+     
+    } else {
+      alert("Erreur lors de la récupération des détails");
                     }
                   })
                   .catch(error => {
                     alert("Erreur lors de la récupération des détails");
                   });
-                });
-              } else {
-                // en attente sinon
-                const info = document.createElement('span');
-                info.textContent = "Trade en attente";
-                info.classList.add('status-info');
-                wraping.appendChild(info);
-              }
-            } else {
-              // pas de en attente alors trade
-              const tradeBtn = document.createElement('button');
-              tradeBtn.textContent = "Trade";
-              tradeBtn.classList.add('trading');
-              tradeBtn.dataset.userid = friend.username;
-              wraping.appendChild(tradeBtn);
 
-              tradeBtn.addEventListener('click', () => {
-                currentTradingFriend = friend.username;
-                updateConfirmVisibility();
-                setupTradeObserver(); // pour observer la zone echange
-              });
-            }
+      });
+
+    } else {
+      const info = document.createElement('span');
+      info.textContent = "Trade en attente";
+      info.classList.add('status-info');
+      wrapContainer.appendChild(info);
+    }
+
+  } else {
+    const tradeBtn = document.createElement('button');
+    tradeBtn.textContent = "Trade";
+    tradeBtn.classList.add('trading');
+    tradeBtn.dataset.userid = friend.username;
+    wrapContainer.appendChild(tradeBtn);
+
+    tradeBtn.addEventListener('click', () => {
+      currentTradingFriend = friend.username;
+      updateConfirmVisibility();
+      setupTradeObserver();
+    });
+  }
+
+  container.appendChild(wrapContainer);
           } else {
-            const inviteBtn = document.createElement('button');
-            inviteBtn.textContent = "Invite";
-            inviteBtn.classList.add('invite');
-            inviteBtn.dataset.userid = friend.iduser;
-            wraping.appendChild(inviteBtn);
+             const inviteBtn = document.createElement('button');
+      inviteBtn.textContent = "Invite";
+      inviteBtn.classList.add('invite');
+      inviteBtn.dataset.userid = friend.iduser;
+      wraping.appendChild(inviteBtn);
+
+      friendAdd.appendChild(wraping);
           }
 
-          container.appendChild(wraping);
+          
         });
       }
 
@@ -1187,34 +1409,9 @@ $alreadyFriends = $stmt3->fetchAll(PDO::FETCH_COLUMN);
         container.addEventListener('click', (event) => {
           const target = event.target;
         
-          //inviter
-          if (target.classList.contains('invite') && target.textContent.trim().toLowerCase() === "invite") {
-            const userId = target.dataset.userid;
-            fetch('dashboard.php?page=amis', {
-              method: 'POST',
-              headers: {'Content-Type': 'application/json'},
-              body: JSON.stringify({ inviteUserId: userId })
-            })
-            .then(res => res.json())
-            .then(data => {
-              if (data.success) {
-                target.textContent = "Invitation envoyée";
-                target.disabled = true;
-               
-
-                const cancelBtn = document.createElement('button');
-                cancelBtn.classList.add('cancel');
-                cancelBtn.dataset.userid = userId;
-                cancelBtn.textContent = 'Cancel';
-                target.parentNode.appendChild(cancelBtn);
-              } else {
-                alert("Erreur : " + JSON.stringify(data));
-              }
-            })
-            .catch(console.error);
-          }
+          
           // si contient trading, alors on affiche cartes dans zone
-          else if (target.classList.contains('trading')) {
+          if (target.classList.contains('trading')) {
             const username = target.dataset.userid;
             currentTradingFriend = username;
             
@@ -1310,10 +1507,133 @@ $alreadyFriends = $stmt3->fetchAll(PDO::FETCH_COLUMN);
 
               trade2.appendChild(cardDiv);
             });
+          } else if (target.classList.contains('cancel-trade-from-friend')) {
+            const tradeId = target.dataset.tradeid;
+            console.log("Cancel invite clicked for userId:", tradeId);
+            fetch('dashboard.php?page=amis', {
+              method: 'POST',
+              headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify({ cancelTradeId: tradeId })
+            })
+            .then(res => res.json())
+            .then(data => {
+              if (data.success) {
+                const cancel = target.parentNode.querySelector('.cancel-trade-from-friend');
+                const confirm = target.parentNode.querySelector('.confirm-trade-btn');
+                const details = target.parentNode.querySelector('.view-details');
+                if (cancel) {
+                  cancel.style.display = "none";
+                  confirm.style.display = "none";
+                  details.style.display = "none";
+                }
+                target.remove();
+              } else {
+                alert("Erreur lors de l'annulation");
+              }
+            })
+            .catch(console.error);
           }
 
+         
+        });
+      }
+
+      
+      if (other) {
+        other.addEventListener('click', (event) => {
+          const target = event.target;
+
+          //inviter
+         
+
+           
+
+          // accepter invitation
+          if (target.classList.contains('invite') && target.textContent === "Accepter") {
+            const userId = target.dataset.userid;
+            fetch('dashboard.php?page=amis', {
+              method: 'POST',
+              headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify({ acceptInviteUserId: userId })
+            })
+            .then(res => res.json())
+            .then(data => {
+              if (data.success) {
+                target.textContent = "Ami(e)";
+                const trade = document.createElement('button');
+                trade.textContent = "Trade";
+                trade.classList.add('trading');
+                const wraping = document.querySelector('.wraping')
+              
+                wraping.appendChild(trade);
+
+                const refuseTrade = target.parentNode.querySelector('.cancel-invite');
+                if (refuseTrade) refuseTrade.remove();
+              }
+            })
+            .catch(console.error);
+          }
+
+          // refuser invitation
+          else if (target.classList.contains('remove-friend')) {
+            const userId = target.dataset.userid;
+            fetch('dashboard.php?page=amis', {
+              method: 'POST',
+              headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify({ deleteFriend: userId })
+            })
+            .then(res => res.json())
+            .then(data => {
+              if (data.success) {
+
+                 const tradeBtn = target.parentNode.querySelector('.trading');
+                  if (tradeBtn) tradeBtn.remove();
+
+                const trade = target.parentNode.querySelector('.trading');
+                const acceptBtn = target.parentNode.querySelector('.remove-friend');
+                if (acceptBtn) acceptBtn.remove();
+                target.remove();
+              }
+            })
+            .catch(console.error);
+          }
+          
+        
+        })
+      }
+
+       if (friendAdd) {
+        friendAdd.addEventListener('click', (event) => {
+          const target = event.target; 
+
+           if (target.classList.contains('invite') && target.textContent.trim().toLowerCase() === "invite") {
+            const userId = target.dataset.userid;
+            fetch('dashboard.php?page=amis', {
+              method: 'POST',
+              headers: {'Content-Type': 'application/json'},
+              body: JSON.stringify({ inviteUserId: userId })
+            })
+            .then(res => res.json())
+            .then(data => {
+              if (data.success) {
+                target.textContent = "Invitation envoyée";
+                target.disabled = true;
+               
+
+                const cancelInvite = document.createElement('button');
+                cancelInvite.classList.add('cancel-invite');
+                cancelInvite.dataset.userid = userId;
+                cancelInvite.textContent = 'Cancel';
+                target.parentNode.appendChild(cancelInvite);
+              } else {
+                alert("Erreur : " + JSON.stringify(data));
+              }
+            })
+            .catch(console.error);
+          } 
+          
           //annuler invitation
-          else if (target.classList.contains('cancel') && (target.textContent === "Cancel" || target.textContent === "Annuler")) {
+          else if (target.classList.contains('cancel-invite')) {
             const userId = target.dataset.userid;
             fetch('dashboard.php?page=amis', {
               method: 'POST',
@@ -1335,53 +1655,10 @@ $alreadyFriends = $stmt3->fetchAll(PDO::FETCH_COLUMN);
             })
             .catch(console.error);
           }
-
-          // accepter invitation
-          else if (target.classList.contains('invite') && target.textContent === "Accepter") {
-            const userId = target.dataset.userid;
-            fetch('dashboard.php?page=amis', {
-              method: 'POST',
-              headers: {'Content-Type': 'application/json'},
-              body: JSON.stringify({ acceptInviteUserId: userId })
-            })
-            .then(res => res.json())
-            .then(data => {
-              if (data.success) {
-                target.textContent = "Ami(e)";
-                const trade = document.createElement('button');
-                trade.textContent = "Trade";
-                trade.classList.add('trading');
-                const wraping = document.querySelector('.wraping')
-              
-                wraping.appendChild(trade);
-
-                const refuseBtn = target.parentNode.querySelector('.cancel');
-                if (refuseBtn) refuseBtn.remove();
-              }
-            })
-            .catch(console.error);
-          }
-
-          // refuser invitation
-          else if (target.classList.contains('cancel') && target.textContent === "Refuser") {
-            const userId = target.dataset.userid;
-            fetch('dashboard.php?page=amis', {
-              method: 'POST',
-              headers: {'Content-Type': 'application/json'},
-              body: JSON.stringify({ refuseInviteUserId: userId })
-            })
-            .then(res => res.json())
-            .then(data => {
-              if (data.success) {
-                const acceptBtn = target.parentNode.querySelector('.invite');
-                if (acceptBtn) acceptBtn.remove();
-                target.remove();
-              }
-            })
-            .catch(console.error);
-          }
-        });
-      }
+          
+        
+          })
+        }
 
       toggleBtn.addEventListener('click', () => {
         wrapper.classList.toggle('sidebar-hidden');
@@ -1456,6 +1733,7 @@ $alreadyFriends = $stmt3->fetchAll(PDO::FETCH_COLUMN);
           });
         }
       }
+
 
       // voir les changements des cartes selectionées
       function setupTradeObserver() {

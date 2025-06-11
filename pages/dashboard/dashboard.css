@@ -2,6 +2,8 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
+     scrollbar-width: none; 
+       overflow: hidden;
 }
 
 * {
@@ -80,7 +82,7 @@ html, body {
     --nav-border: rgba(255, 215, 0, 0.3);
     --nav-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
     --nav-blur: blur(12px);
-    --nav-transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --nav-transition: all 0.3s ease;
 
     /* Nouvelles variables pour les cartes */
     --card-bg: rgba(255, 255, 255, 0.8);
@@ -90,7 +92,7 @@ html, body {
     --card-border-radius: 20px;
     --card-padding: 1.5rem;
     --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    --card-transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    --card-transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) ;
 
     /* Nouvelles variables pour les stats */
     --stat-hp: linear-gradient(135deg, #ff4d4d, #ff6b6b);
@@ -98,6 +100,29 @@ html, body {
     --stat-def: linear-gradient(135deg, #4dff4d, #6bff6b);
     --stat-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     --stat-glow: 0 0 20px rgba(255, 255, 255, 0.2);
+
+
+     --color-bg: #121212;
+  --color-button-bg: rgba(255, 255, 255, 0.1); /* gris fumé */
+  --color-button-bg-hover: rgba(255, 255, 255, 0.2);
+  --color-text: #fff;
+  --color-yellow: #ffcc00; /* jaune vif */
+  --color-yellow-text: #222; /* texte sombre sur jaune */
+  --color-focus-outline: rgba(255, 255, 255, 0.5);
+  --transition: 0.3s ease;
+  --radius-sm: 8px;
+  --blur-glass: blur(10px);
+
+
+   --color-bg: #fffbee; 
+  --color-text: #222222; 
+  --color-placeholder: #a0a0a0;
+  --color-border: #ccc; 
+  --color-accent: #d18a3f;
+  --color-focus: #30cfd0; 
+  --radius-md: 12px; 
+  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.1); 
+  --transition: all 0.3s ease; 
 }
 
 
@@ -134,6 +159,15 @@ html, body {
 
     /* Nouvelles variables pour les cartes */
     --card-bg: var(--card-bg-dark);
+
+
+     --color-bg: #121212; 
+  --color-text: #fff;
+  --color-placeholder: #777; 
+  --color-border: #404040; 
+  --color-accent: #d18a3f; 
+  --color-focus: #30cfd0;
+  --shadow-sm: 0 2px 6px rgba(0,0,0,0.8); 
 }
 
 body {
@@ -147,10 +181,11 @@ body {
 
 .wrapper {
     display: flex;
-    min-height: 100vh;
+    max-height: 100vh;
     background: linear-gradient(135deg, var(--background), var(--surface));
     position: relative;
     overflow: hidden;
+
 }
 
 .wrapper::before {
@@ -226,6 +261,8 @@ body {
     background-color: var(--background);
     position: relative;
     overflow-x: hidden;
+    overflow-y: scroll;
+    height: 90vh;
     
 }
 
@@ -250,12 +287,14 @@ body {
 .principal-content {
     display: flex;
     flex-direction: column;
+ 
     width: 100%;
+    overflow: hidden;
 }
 
 .content-header {
     background-color: var(--surface);
-    padding: 1.5rem 2rem;
+    padding: 1rem 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -306,13 +345,13 @@ body {
     transition: var(--transition);
 }
 
-.btn_open:hover {
+.btn_open {
     background-color: var(--primary-hover);
     transform: translateY(-2px) translateZ(20px);
     box-shadow: var(--shadow-3d);
 }
 
-.btn_open:hover::before {
+.btn_open::before {
     transform: translateX(100%);
 }
 
@@ -345,11 +384,12 @@ body {
     transform-style: preserve-3d;
     transition: transform 0.6s;
     cursor: pointer;
+    perspective: 1000px;
    
 }
 
 .pokemon.flipped {
-    transform: rotateY(180deg);
+    transform: rotateY(-180deg);
 }
 
 .card-back {
@@ -847,39 +887,67 @@ body {
     opacity: 1;
 }
 
-/* Amélioration des boutons d'action */
-.invite, .cancel, .trading, .confirm-trade-btn {
-    position: relative;
-    overflow: hidden;
-    z-index: 1;
+/* Boutons standards */
+.invite, .cancel-invite, .trading, .view-details, .remove-friend {
+  background-color: var(--color-button-bg);
+  color: var(--color-text);
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color var(--transition), transform var(--transition);
+  backdrop-filter: var(--blur-glass);
+  box-shadow: 0 0 5px rgba(255,255,255,0.05);
+  text-align: center;
+  user-select: none;
 }
 
-.invite::before, .cancel::before, .trading::before, .confirm-trade-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(45deg, transparent, rgba(255,255,255,0.2), transparent);
-    transform: translateX(-100%);
-    transition: var(--transition);
-    z-index: -1;
+/* Hover gris fumé un peu plus opaque */
+.invite:hover, .cancel-invite:hover, .trading:hover, .view-details:hover {
+  background-color: var(--color-button-bg-hover);
+  animation: pulseButton 1s infinite;
 }
 
-.invite:hover::before, .cancel:hover::before, .trading:hover::before, .confirm-trade-btn:hover::before {
-    transform: translateX(100%);
+/* Focus accessible */
+.invite:focus, .cancel-invite:focus, .trading:focus, .view-details:focus {
+  outline: 2px solid var(--color-focus-outline);
+  outline-offset: 3px;
 }
 
-/* Effet de pulsation pour les boutons d'action */
+/* Bouton confirmation important */
+.confirm-trade-btn {
+  background-color: var(--color-yellow);
+  color: var(--color-yellow-text);
+  font-weight: 700;
+  box-shadow: 0 0 10px rgba(255, 204, 0, 0.7);
+  transition: background-color var(--transition), box-shadow var(--transition);
+  border: none;
+}
+
+/* Hover confirmation */
+.confirm-trade-btn:hover {
+  background-color: #e6b800; /* jaune un peu plus foncé */
+  box-shadow: 0 0 15px rgba(230, 184, 0, 0.9);
+  animation: pulseButton 1s infinite;
+}
+
+/* Focus confirmation */
+.confirm-trade-btn:focus {
+  outline: 3px solid #fff176;
+  outline-offset: 4px;
+}
+
+/* Active pour tous */
+.invite:active, .cancel-invite:active, .trading:active, .confirm-trade-btn:active, .view-details:active {
+  transform: scale(0.97);
+  transition-duration: 0.1s;
+}
+
+/* Animation pulse */
 @keyframes pulseButton {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-}
-
-.trading:hover, .confirm-trade-btn:hover {
-    animation: pulseButton 1s infinite;
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
 }
 
 /* Amélioration des stats */
@@ -958,19 +1026,12 @@ body {
     transition: var(--transition);
     position: relative;
     overflow: hidden;
+    width: 90%;
+    overflow-x: scroll;
+    min-height: 5rem;
 }
 
-.wraping::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 4px;
-    height: 100%;
-    background: var(--primary);
-    transform: scaleY(0);
-    transition: var(--transition);
-}
+
 
 .wraping:hover {
     transform: translateX(5px);
@@ -982,7 +1043,7 @@ body {
 }
 
 /* Buttons */
-.invite, .cancel, .trading, .confirm-trade-btn, .cancel-trade {
+.invite, .cancel-invite, .remove-friend, .trading, .confirm-trade-btn, .cancel-trade, .cancel-trade-from-friend {
     padding: 0.75rem 1.5rem;
     border-radius: var(--radius-sm);
     border: none;
@@ -993,7 +1054,7 @@ body {
     overflow: hidden;
 }
 
-.cancel-trade {
+.cancel-trade, .cancel-trade-from-friend {
   background-color: #bd2900;
   color: white;
 }
@@ -1003,7 +1064,7 @@ body {
     color: var(--text-primary);
 }
 
-.cancel {
+.cancel-invite, .remove-friend {
     background-color: var(--surface-hover);
     color: var(--text-primary);
 }
@@ -1013,7 +1074,7 @@ body {
     color: white;
 }
 
-.invite:hover, .cancel:hover, .trading:hover, .confirm-trade-btn:hover {
+.invite:hover, .cancel-invite:hover, .remove-friend, .trading:hover, .confirm-trade-btn:hover {
     transform: translateY(-2px);
     box-shadow: var(--shadow-md);
 }
@@ -1107,8 +1168,8 @@ input:checked + label::after {
     animation-delay: calc(var(--i) * 0.1s);
 }
 
-.btn_open:hover {
-    animation: pulse 1s infinite;
+.btn_open {
+    animation: pulse 3s infinite;
 }
 
 /* Responsive Design */
@@ -1185,6 +1246,7 @@ input:checked + label::after {
     width: 40px;
     height: 40px;
     overflow: hidden;
+    display: none;
     cursor: pointer;
     z-index: 200;
     transition: transform 0.5s ease;
@@ -1255,9 +1317,9 @@ input:checked + label::after {
     transform: translateX(0);
 }
 
-.link-page-menu {
+.link-page-menu, .logout {
     position: relative;
-    padding: 1rem 2rem;
+    
     margin: 0.5rem 0;
     color: var(--text-primary);
     font-weight: 500;
@@ -1266,8 +1328,13 @@ input:checked + label::after {
     transition: var(--nav-transition);
     display: flex;
     align-items: center;
+    
     gap: 1rem;
     text-decoration: none;
+}
+
+.link-page-menu {
+    padding: 1rem 2rem;
 }
 
 .dark-none {
@@ -1281,19 +1348,39 @@ input:checked + label::after {
     top: 0;
     height: 100%;
     width: 3px;
-    background: var(--primary);
+    
     transform: scaleY(0);
     transition: var(--nav-transition);
     transform-origin: bottom;
 }
 
-.link-page-menu:hover {
-    background: var(--nav-item-hover);
-    padding-left: 2.5rem;
-    color: var(--primary);
+.link-page-menu::before {
+    background: var(--primary);
 }
 
-.link-page-menu:hover::before {
+
+
+
+
+.link-page-menu:hover {
+   
+    padding-left: 2.5rem;
+   
+}
+
+.link-page-menu:hover {
+     background: var(--nav-item-hover);
+      color: var(--primary);
+}
+
+
+
+.logout:hover {
+    background: rgba(255, 0, 0, 0.199);
+    color: rgba(255, 0, 0, 0.401);
+}
+
+.link-page-menu:hover::before   {
     transform: scaleY(1);
 }
 
@@ -1554,8 +1641,351 @@ input:checked + label::after {
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.navigation {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    width: 20vw;
+    padding-top: 5rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    background-color: var(--surface);
+    border-right: 1px solid var(--border);
+}
+
+.pfp {
+    width: 3rem;
+    border-radius: 10rem;
+}
+
+.right_section_header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 2rem;
+}
+
+.notif {
+    width: 2rem;
+    height: 2rem;
+    padding: 0.5rem;
+    border: solid 1px #c1a057;
+    border-radius: 10rem;
+    transition: background-color 0.1s ease;
+}
+
+.notif:hover {
+    background-color: #c19f5786;
+    cursor: pointer;
+}
+
+.absolute_arrow {
+   transform: rotate(180deg);
+    z-index: 2;
+    width: 2rem;
+    transition: all 0.2s ease;
+   
+}
+
+.arrow_return {
+    transform: rotate(0deg);
+}
+
+.logout {
+    padding: 1rem;
+    text-align: center;
+}
+
+.container_friends {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+    height: 30%;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    position: relative;
+   
+}
+
+.friends {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    display: flex;
+    justify-content: space-between;
+    text-align: start;
+    padding: 2rem;
+ 
+    width: 100%;
+     background-color: var(--surface);
+}
+
+.logout_container {
+    width: max-content;
+    height: 100vw;
+        background-color: var(--surface);
+        box-shadow: var(--shadow-sm);
+            border-left: 1px solid var(--border);
+             border-bottom: 1px solid var(--border);
+             border-right: 1px solid var(--border);
+    position: absolute;
+   
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    overflow-y: scroll;
+   
+    top: 5.4rem;
+    right: 0rem;
+    display: none;
+}
+
+.notif_wrap {
+        position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 2rem;
+    padding: 0.2rem 0.5rem;
+    cursor: pointer;
+}
+
+.notif_container {
+      width: max-content;
+    height: 100vw;
+        background-color: var(--surface);
+        box-shadow: var(--shadow-sm);
+            border-left: 1px solid var(--border);
+             border-bottom: 1px solid var(--border);
+             border-right: 1px solid var(--border);
+    position: absolute;
+   
+    flex-direction: column-reverse;
+    align-items: center;
+    justify-content: start;
+    overflow-y: scroll;
+   z-index: 102;
+    top: 5.4rem;
+    right: 20%;
+    display: none;
+
+}
+
+
+.add_friends {
+    width: 2rem;
+    cursor: pointer;
+    
+}
+
+.add_friends:hover {
+    stroke: #b4b4b4;
+}
+
+.container_add_friends {
+    display: none;
+    height: 100vh;
+    width: 100vw;
+    z-index: 101;
+    background-color: #00000041;
+    position: absolute;
+    align-items: center;
+    justify-content: center;
+   
+}
+
+.add_users {
+    width: 50%;
+    height: 50vh;
+    overflow-y: scroll;
+    background-color: var(--surface);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    border-radius: var(--radius-md);
+}
+
+
+
+
+.opened {
+    display: flex;
+    
+}
+
+
+
+.group_pfp {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: 2rem;
+    padding: 0.2rem 0.5rem;
+    cursor: pointer;
+
+}
+
+.group_pfp:hover {
+    background-color: rgba(85, 85, 85, 0.185);
+}
+
+.imgPfp {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 10rem;
+}
+
+
 @media (max-width: 1024px) {
     .nav-menu {
         width: 100vw;
     }
+
+    
 }
+
+@media (max-width: 768px) {
+  
+
+    .navigation{
+        display: none;
+    }
+
+    .burger {
+        display: flex;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.trade-overlay {
+  position: fixed;
+  top: 0; right: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.trade-modal {
+  background-color: var(--surface);
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 500px;
+  width: 90%;
+}
+.trade-modal ul {
+  list-style: none;
+  padding-left: 0;
+}
+.trade-modal li {
+  margin: 5px 0;
+}
+.close-trade-modal {
+  margin-top: 10px;
+  padding: 6px 10px;
+  background: #444;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+
+.card-img {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+}
+
+.close_icon {
+    width: 2rem;
+    height: 2rem;
+    cursor: pointer;
+    fill: white;
+    position: absolute;
+    right: 0;
+    top: 0;
+    
+}
+
+.close_icon:hover {
+    fill: rgb(168, 168, 168);
+}
+
+
+ .search-wrapper {
+    width: 100%;
+    max-width: 480px;
+  }
+
+  input[type="search"] {
+    width: 100%;
+    padding: 1rem 1.5rem;
+    font-size: 1.125rem;
+    border-radius: var(--radius-md);
+    border: 2px solid var(--primary-glow);
+    background-color: white;
+    color: var(--color-text);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    outline-offset: 3px;
+  }
+
+  input[type="search"]::placeholder {
+    color: var(--color-placeholder);
+    font-style: italic;
+  }
+
+  input[type="search"]:hover:not(:focus) {
+    border-color: #ffae0047;
+    box-shadow: 0 0 6px #c19f5791;
+  }
+
+  input[type="search"]:focus {
+    border-color: #b19508e4;
+    box-shadow: 0 0 8px 3px #a1883985;
+    outline: none;
+    background-color: #f0fcfd;
+  }
+
+   input[type="search"] {
+      background-color: #2a2a2a;
+      border-color: var(--primary-glow);
+      color: var(--color-text);
+      box-shadow: var(--);
+    }
+
+    input[type="search"]::placeholder {
+      color: var( --primary-glow);
+    }
+
+    input[type="search"]:focus {
+      background-color: #c19f5731;
+    }
+
+
+
+
+
+
